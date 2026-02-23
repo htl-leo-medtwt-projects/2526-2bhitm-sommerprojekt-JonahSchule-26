@@ -10,7 +10,7 @@ In diesem Schuljahr entwickelst du ein vollständiges, browserbasiertes Spiel, d
 - dynamische Inhalte per JS erzeugen
 - eine strukturierte JSON-Datenquelle verwenden
 - LocalStorage sinnvoll einsetzen (Highscore, Entscheidungen, Fortschritt, ...)
-- mindestens eine extere JS-Library integrieren
+- mindestens eine externe JS-Library integrieren
 
 
 ## Deadlines 25/26
