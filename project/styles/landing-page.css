@@ -9,7 +9,11 @@ main {
     height: 100%;
     font-family: f1Font;
     letter-spacing: 5px;
+    image-rendering: pixelated;
+    margin: 0;
 }
+
+/* exit screen styles */
 
 #exit {
     position: absolute;
@@ -79,5 +83,67 @@ main {
 }
 
 .hiddenOnStart {
-    /* display: none; */
+    display: none;
+}
+
+/* Start Screen Styles */
+
+#start-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 3rem;
+    width: 100%;
+    height: 100%;
+    background-image: url(./../assets/img/startscreen_background.png);
+    background-size: cover;
+    background-position: center;
+}
+
+#start-screen-headline {
+    font-size: 4rem;
+    color: white;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);
+    margin: 0;
+    background-color: #FFD400;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+}
+
+#selection-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.optionForStart {
+    padding: 1rem 3rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+    color: #333;
+    text-align: center;
+}
+
+#start-game {
+    background: linear-gradient(to bottom, #FF3D00, #B31217);
+}
+
+#options {
+    background: linear-gradient(to bottom, #00C2FF, #005BFF);
+}
+
+#leaderboard {
+    background: linear-gradient(to bottom, #F7D046, #DAA520);
+}
+
+#exit-button {
+    background: linear-gradient(to bottom, #0575E6, #00F260);
+}
+
+#tutorial {
+    background: linear-gradient(to bottom, #3A00A8, #9D00FF);
 }
