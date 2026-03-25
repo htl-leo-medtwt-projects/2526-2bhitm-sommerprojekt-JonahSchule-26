@@ -46,7 +46,7 @@ function showExitOverlay() {
 }
 
 function showStartscreen() {
-  SCREEN: forEach((screen) => {
+  SCREEN.forEach((screen) => {
     screen.classList.add("hiddenOnStart");
     screen.style.display = "none";
   });
