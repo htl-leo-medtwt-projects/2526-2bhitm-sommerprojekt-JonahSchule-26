@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,38 +9,39 @@
     <link rel="stylesheet" href="./styles/landing-page.css">
     <script src="./scripts/landing-page-function.js" defer></script>
 </head>
+
 <body>
     <main>
         <section id="start-screen" class="general">
             <h1 id="start-screen-headline">Kart and Key</h1>
             <div id="selection-grid">
                 <div id="start-game" class="optionForStart">START GAME</div>
-                <div id="options" class="optionForStart">OPTIONS</div>
-                <div id="leaderboard" class="optionForStart">LEADERBOARD</div>
-                <div id="tutorial" class="optionForStart">TUTORIAL</div>
-                <div id="exit-button" class="optionForStart" onclick="showExitOverlay()">EXIT</div>
+                <div id="options" class="optionForStart" onclick="showOptionsScreen()">OPTIONS</div>
+                <div id="leaderboard" class="optionForStart" onclick="showLeaderboardScreen()">LEADERBOARD</div>
+                <div id="tutorial" class="optionForStart" onclick="showTutorialScreen()">TUTORIAL</div>
+                <div id="exit-button" class="optionForStart" onclick="showExitScreen()">EXIT</div>
             </div>
         </section>
 
-        <section id="optionsScreen" class="general" class="hiddenOnStart">
-
+        <section id="optionsScreen" class="general">
         </section>
 
-        <section id="exitScreen" class="overlayLandingPage" class="hiddenOnStart">
-            <h1 id="exit-headline" class="areYouSure">Are you Sure?</h1>
-            <div id="yes-no-grid">
-                <div id="yes" class="optionForExit">YES</div>
-                <div id="no" class="optionForExit" onclick="showStartScreen()">NO</div>
+        <section id="exitScreen">
+            <div>
+                <h1 id="exit-headline" class="areYouSure">Are you Sure?</h1>
+                <div id="yes-no-grid">
+                    <div id="yes" class="optionForExit" onclick="exitGame()">YES</div>
+                    <div id="no" class="optionForExit" onclick="showStartScreen()">NO</div>
+                </div>
             </div>
         </section>
 
-        <section id="leaderboardScreen" class="general" class="hiddenOnStart">
-
+        <section id="leaderboardScreen" class="general">
         </section>
 
-        <section id="tutorialScreen" class="general hiddenOnStart">
-
+        <section id="tutorialScreen" class="general">
         </section>
     </main>
 </body>
+
 </html>

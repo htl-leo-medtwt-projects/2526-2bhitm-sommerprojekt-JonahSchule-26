@@ -15,6 +15,44 @@ main {
 
 /* exit screen styles */
 
+/* Exit Screen Styles - Korrigiert */
+#exitScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url(./../assets/img/startscreen_background.png);
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+#exitScreen > div {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20vw;
+    aspect-ratio: 3/2;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 3rem;
+    padding: 2rem;
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    background-image: url(./../assets/img/the-hub-big-size.png);
+    background-size: cover;
+    background-position: center;
+}
+
 #exit {
     position: absolute;
     top: 50%;
