@@ -83,5 +83,24 @@ window.onload = function () {
 };
 
 function exitGame() {
-  window.close();
+  document.body.innerHTML = `
+    <div style="
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: grid;
+      justify-content: center;
+      align-items: center;
+      background: black;
+      color: white;
+      font-family: Arial;
+      grid-template-columns: 1fr;
+      text-align: center;
+    ">
+      <h1>Game Closed</h1><br>
+      <p>Thank you for playing!</p>
+    </div>
+  `;
 }
