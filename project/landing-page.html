@@ -24,6 +24,56 @@
         </section>
 
         <section id="optionsScreen" class="general">
+            <div class="options-container">
+                <h1 class="options-headline">OPTIONS</h1>
+
+                <div class="options-content">
+                    <!-- Music Volume Slider -->
+                    <div class="option-item">
+                        <label>MUSIC VOLUME:</label>
+                        <div class="slider-container">
+                            <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="70">
+                            <span id="music-value" class="volume-value">70%</span>
+                        </div>
+                    </div>
+
+                    <!-- SFX Volume Slider -->
+                    <div class="option-item">
+                        <label>SFX VOLUME:</label>
+                        <div class="slider-container">
+                            <input type="range" id="sfx-volume" class="volume-slider" min="0" max="100" value="80">
+                            <span id="sfx-value" class="volume-value">80%</span>
+                        </div>
+                    </div>
+
+                    <!-- Zusätzliche Option 1 -->
+                    <div class="option-item">
+                        <label>OPTION 1:</label>
+                        <select id="option-1" class="option-select">
+                            <option value="easy">Easy</option>
+                            <option value="normal" selected>Normal</option>
+                            <option value="hard">Hard</option>
+                        </select>
+                    </div>
+
+                    <!-- Zusätzliche Option 2 -->
+                    <div class="option-item">
+                        <label>OPTION 2:</label>
+                        <select id="option-2" class="option-select">
+                            <option value="en">English</option>
+                            <option value="de" selected>German</option>
+                            <option value="fr">French</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="options-buttons">
+                    <button id="reset-options" class="option-action-btn reset-btn">Reset</button>
+                    <button id="cancel-options" class="option-action-btn cancel-btn"
+                        onclick="showStartScreen()">Cancel</button>
+                    <button id="apply-options" class="option-action-btn apply-btn">Apply</button>
+                </div>
+            </div>
         </section>
 
         <section id="exitScreen">

@@ -153,6 +153,7 @@ a {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    text-align: center;
 }
 
 .optionForStart {
@@ -164,6 +165,8 @@ a {
     transition: all 0.3s ease;
     color: #333;
     text-align: center;
+    display: flex;
+    justify-content: center;
 }
 
 #start-game {
@@ -184,4 +187,142 @@ a {
 
 #tutorial {
     background: linear-gradient(to bottom, #3A00A8, #9D00FF);
+}
+
+/* Options Screen Styles */
+#optionsScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url(./../assets/img/startscreen_background.png);
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.options-container {
+    background: #d62b00;
+    border-radius: 1rem;
+    padding: 2rem;
+    min-width: 600px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.options-headline {
+    font-size: 2.5rem;
+    color: #FFD400;
+    text-align: center;
+    margin-bottom: 2rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.options-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.option-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+}
+
+.option-item label {
+    font-size: 1.2rem;
+    color: white;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    min-width: 120px;
+}
+
+/* Slider Styles */
+.slider-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+}
+
+.volume-slider {
+    flex: 1;
+    height: 5px;
+    border-radius: 5px;
+    background: #333;
+    outline: none;
+    cursor: pointer;
+}
+
+.volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: #FFD400;
+    cursor: pointer;
+}
+
+.volume-value {
+    color: white;
+    font-size: 0.9rem;
+    min-width: 40px;
+    text-align: right;
+}
+
+/* Select Styles */
+.option-select {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border-radius: 0.5rem;
+    border: none;
+    background: white;
+    cursor: pointer;
+    font-family: f1Font;
+    flex: 1;
+}
+
+/* Buttons */
+.options-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.option-action-btn {
+    padding: 0.75rem 2rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+    border: none;
+    font-family: f1Font;
+}
+
+.reset-btn {
+    background: linear-gradient(to bottom, #FF9800, #F57C00);
+    color: white;
+}
+
+.cancel-btn {
+    background: linear-gradient(to bottom, #FF0000, #CC0000);
+    color: white;
+}
+
+.apply-btn {
+    background: linear-gradient(to bottom, #4CAF50, #2E7D32);
+    color: white;
+}
+
+.option-action-btn:hover {
+    transform: scale(1.05);
+    filter: brightness(1.1);
 }
