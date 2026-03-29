@@ -41,7 +41,7 @@
                     <div class="option-item">
                         <label>SFX VOLUME:</label>
                         <div class="slider-container">
-                            <input type="range" id="sfx-volume" class="volume-slider" min="0" max="100" value="80">
+                            <input type="range" id="sfx-volume" class="volume-slider" min="0" max="100" value="80" ondrag="">
                             <span id="sfx-value" class="volume-value">80%</span>
                         </div>
                     </div>
@@ -50,9 +50,9 @@
                     <div class="option-item">
                         <label>OPTION 1:</label>
                         <select id="option-1" class="option-select">
-                            <option value="easy">Easy</option>
-                            <option value="normal" selected>Normal</option>
-                            <option value="hard">Hard</option>
+                            <option value="1">Option 1</option>
+                            <option value="2" selected>Option 2</option>
+                            <option value="3">Options 3</option>
                         </select>
                     </div>
 
@@ -60,18 +60,20 @@
                     <div class="option-item">
                         <label>OPTION 2:</label>
                         <select id="option-2" class="option-select">
+                            <option value="none" selected>- Please choose your language -</option>
                             <option value="en">English</option>
                             <option value="de" selected>German</option>
-                            <option value="fr">French</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="options-buttons">
-                    <button id="reset-options" class="option-action-btn reset-btn">Reset</button>
+                    <button id="reset-options" class="option-action-btn reset-btn"
+                        onclick="showAreYouSureScreen()">Reset</button>
                     <button id="cancel-options" class="option-action-btn cancel-btn"
                         onclick="showStartScreen()">Cancel</button>
-                    <button id="apply-options" class="option-action-btn apply-btn">Apply</button>
+                    <button id="apply-options" class="option-action-btn apply-btn"
+                        onclick="applyOptions(); showStartScreen()">Apply</button>
                 </div>
             </div>
         </section>
@@ -90,6 +92,26 @@
         </section>
 
         <section id="tutorialScreen" class="general">
+            <div class="tutorial-overlay">
+                <div class="tutorial-dialog">
+                    <h2 id="tutorial-title" class="tutorial-title">Welcome to Kart and Key!</h2>
+                    <p id="tutorial-text" class="tutorial-text">Click anywhere to start the tutorial...</p>
+                    <div class="tutorial-progress">
+                        <span id="tutorial-step" class="tutorial-step">Step 0/0</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="are-you-sure" class="general">
+            <div>
+                <h1 id="are-you-sure-headline" class="areYouSure">Are you Sure?</h1>
+                <div id="yes-no-grid-are-you-sure">
+                    <div id="yes-button-are-you-sure" class="areYouSureOption"
+                        onclick="applyOptions(); showStartScreen()">YES</div>
+                    <div id="no-button-are-you-sure" class="areYouSureOption" onclick="showOptionsScreen()">NO</div>
+                </div>
+            </div>
         </section>
     </main>
 </body>

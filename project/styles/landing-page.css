@@ -21,7 +21,7 @@ a {
 /* exit screen styles */
 
 /* Exit Screen Styles - Korrigiert */
-#exitScreen {
+#exitScreen, #are-you-sure {
     position: fixed;
     top: 0;
     left: 0;
@@ -35,7 +35,7 @@ a {
     z-index: 10;
 }
 
-#exitScreen > div {
+#exitScreen > div, #are-you-sure > div {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -87,14 +87,14 @@ a {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-#yes-no-grid {
+#yes-no-grid, #yes-no-grid-are-you-sure {
     display: flex;
     gap: 2rem;
     justify-content: center;
     width: 100%;
 }
 
-.optionForExit {
+.optionForExit, .areYouSureOption {
     padding: 0.75rem 2rem;
     font-size: 1.2rem;
     font-weight: bold;
@@ -106,20 +106,20 @@ a {
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-#yes {
+#yes, #yes-button-are-you-sure {
     background: linear-gradient(to bottom, #00FF00, #82FF82);
 }
 
-#no {
+#no, #no-button-are-you-sure {
     background: linear-gradient(to bottom, #FF0000, #FF8080);
 }
 
-#yes:hover {
+#yes:hover, #yes-button-are-you-sure:hover {
     transform: scale(1.05);
     border-color: #4CAF50;
 }
 
-#no:hover {
+#no:hover, #no-button-are-you-sure:hover {
     transform: scale(1.05);
     border-color: #f44336;
 }
@@ -258,6 +258,7 @@ a {
     background: #333;
     outline: none;
     cursor: pointer;
+    accent-color: #ffff00a6;
 }
 
 .volume-slider::-webkit-slider-thumb {
@@ -325,4 +326,101 @@ a {
 .option-action-btn:hover {
     transform: scale(1.05);
     filter: brightness(1.1);
+}
+
+/* Tutorial Screen Styles */
+#tutorialScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url(./../assets/img/startscreen_background.png);
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer; /* Zeigt an, dass man klicken kann */
+}
+
+.tutorial-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tutorial-dialog {
+    background: rgba(0, 0, 0, 0.9);
+    border: 2px solid #FFD400;
+    border-radius: 1rem;
+    padding: 2rem;
+    max-width: 500px;
+    width: 80%;
+    text-align: center;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.tutorial-title {
+    font-size: 2rem;
+    color: #FFD400;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.tutorial-text {
+    font-size: 1.2rem;
+    color: white;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+}
+
+.tutorial-progress {
+    margin-top: 1rem;
+}
+
+.tutorial-step {
+    font-size: 0.9rem;
+    color: #888;
+}
+
+/* Klick-Hinweis */
+.click-hint {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 0.8rem;
+    background: rgba(0,0,0,0.5);
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    pointer-events: none;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 1;
+    }
 }
