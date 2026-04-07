@@ -8,12 +8,25 @@
     <script src="./scripts/other-functions.js" defer></script>
     <link rel="stylesheet" href="./styles/body-head.css">
     <link rel="stylesheet" href="./styles/hub.css">
-    <link rel="stylesheet" href="./styles/garage.css">
 </head>
 <body>
     <section id="hub">
         <img src="./assets/img/the-hub-big-size.png" alt="The Hub" id="hub-image">
         <div id="player-box"><img src="" alt="Player">PLAYER SHOULD BE HERE</div>
+        <div id="hub-elements">
+            <button onclick="showGarage()" id="goToGarage-button">Garage</button>
+            <div id="lives">
+                Lives left: 
+                <div class="hearts" id="heart1"><img src="./assets/img/Heart.png" alt="Live Full"></div>
+                <div class="hearts" id="heart2"><img src="./assets/img/Heart.png" alt="Live Full"></div>
+                <div class="hearts" id="heart3"><img src="./assets/img/Heart.png" alt="Live Full"></div>
+            </div>
+            <div id="garage-power">
+                <div id="power-text">Power: 0</div>
+                <div id="power-bar"><div id="power-fill"></div></div>
+            </div>
+        </div>
+
     </section>
     <section id="garage">
         <div id="upgrade-grid">
@@ -36,6 +49,10 @@
                 </div>
             </div>
         </div>
+        <div class="back-button">
+            <button onclick="showHub()">Back to Hub</button>
+        </div>
+        <div id="img-of-kart"><img src="./assets/img/kart.png" alt="Kart"></div>
     </section>
 </body>
 </html>
