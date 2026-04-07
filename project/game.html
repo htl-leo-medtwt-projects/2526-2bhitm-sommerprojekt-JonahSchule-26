@@ -4,8 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kart and Key - The Game</title>
+    <script src="./scripts/game.js" defer></script>
+    <script src="./scripts/other-functions.js" defer></script>
+    <link rel="stylesheet" href="./styles/body-head.css">
+    <link rel="stylesheet" href="./styles/hub.css">
+    <link rel="stylesheet" href="./styles/garage.css">
 </head>
 <body>
-    
+    <section id="hub">
+        <img src="./assets/img/the-hub-big-size.png" alt="The Hub" id="hub-image">
+        <div id="player-box"><img src="" alt="Player">PLAYER SHOULD BE HERE</div>
+    </section>
+    <section id="garage">
+        <div id="upgrade-grid">
+            <div id="motor">
+                <img src="./assets/img/engine-icon.png" alt="Engine Icon">
+                <div id="motor-upgrade-text-box" class="upgrade-text-box">
+                    MOTOR
+                </div>
+            </div>
+            <div id="grip">
+                <img src="./assets/img/tyre.png" alt="Grip Icon">
+                <div id="grip-upgrade-text-box" class="upgrade-text-box">
+                    GRIP
+                </div>
+            </div>
+            <div id="transmisson">
+                <img src="./assets/img/manual-transmission.png" alt="Transmission Icon">
+                <div id="transmission-upgrade-text-box" class="upgrade-text-box">
+                    TRANSMISSION
+                </div>
+            </div>
+        </div>
+    </section>
 </body>
 </html>
