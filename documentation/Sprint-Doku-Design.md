@@ -1,5 +1,5 @@
-# Jonah Kalmbach
-## 2BHITM, Kart 'n' Key
+# **Jonah Kalmbach**
+## 2BHITM, **Kart 'n' Key**
 ## [Github Repo](https://github.com/htl-leo-medtwt-projects/2526-2bhitm-sommerprojekt-JonahSchule-26)
 
 
@@ -10,7 +10,9 @@
 - JavaScript:
     - Noch kleine Bugs, die aber vermutlich einfach behoben werden können
     - Viele neue Funktionen, die verschiedene Sektionen öffnen
+    - In beiden Main JS Files eine Variable names ``SCREEN``, die alle Objekte des HTML als ``document.getElementByID('<element-name>')`` enthält.
 
+---
 
 ### Ziele des nächsten Sprints
 - Kernmechanik komplett fertig
