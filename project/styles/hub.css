@@ -70,6 +70,10 @@ body {
     font-family: f1Font, sans-serif;
 }
 
+#goToGarage-button:hover {
+    cursor: pointer;
+}
+
 #hub-elements {
     position: absolute;
     top: 0;
