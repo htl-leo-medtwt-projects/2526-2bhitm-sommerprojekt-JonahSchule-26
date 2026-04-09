@@ -41,9 +41,17 @@ function showGarage() {
     SCREEN[0].forEach(element => {
         element.style.display = "none";
     });
-    SCREEN[1].forEach(element => {
-        element.style.display = "block";
-    });
+    for (let i = 0; i < SCREEN[1].length; i++) {
+        if ( i == 1) {
+            SCREEN[1][i].style.display = "grid";
+        } else if (i == 0) {
+            SCREEN[1][i].style.display = "block";
+        } else if (i == 3 || i == 5 || i == 7) {
+            SCREEN[1][i].style.display = "absolute";
+        } else {
+            SCREEN[1][i].style.display = "block";
+        }
+    }
 }
 
 
