@@ -38,9 +38,15 @@ body {
     background: linear-gradient(90deg,rgba(157, 0, 255, 1) 0%, rgba(58, 0, 168, 1) 100%);
     padding: 5px 10px;
     border-radius: 5px;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    display: flex;
+    flex-direction: row;
     gap: 10px;
+}
+
+.live {
+    width: 20px;
+    height: 20px;
+    image-rendering: pixelated;
 }
 
 #goToGarage-button {
@@ -132,10 +138,12 @@ body {
     background: linear-gradient(90deg,rgba(255, 0, 0, 1) 0%, rgba(255, 86, 86, 1) 50%, rgba(255, 0, 0, 1) 100%);
     border-radius: 0.5rem;
     border: none;
+    transition: all 0.3s ease;
 }
 
 .back-button > button:hover {
     background: linear-gradient(90deg,rgba(255, 86, 86, 1) 0%, rgba(255, 0, 0, 1) 50%, rgba(255, 86, 86, 1) 100%);
+    padding: 100px;
     cursor: pointer;
 }
 

@@ -10,11 +10,10 @@
 - JavaScript:
     - Noch kleine Bugs, die aber vermutlich einfach behoben werden können
     - Viele neue Funktionen, die verschiedene Sektionen öffnen
-<<<<<<< HEAD
+
     - In beiden Main JS Files eine Variable names ``SCREEN``, die alle Objekte des HTML als ``document.getElementByID('<element-name>')`` enthält.
 =======
-    - In beiden Main JS Files eine Variable names ``SCREEN``, die alle Objekte des HTML als ``document.getElementByID('')`` enthält.s
->>>>>>> c41a460c67ac8dad2a56b986a64e557f0d674c1b
+    - In beiden Main JS Files eine Variable names ``SCREEN``, die alle Objekte des HTML als ``document.getElementByID('')`` enthält.
 
 ---
 
