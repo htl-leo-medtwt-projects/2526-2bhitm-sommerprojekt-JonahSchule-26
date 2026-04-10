@@ -56,14 +56,39 @@ function showGarage() {
       element.style.left = "50%";
       element.style.transform = "translateX(-50%)";
     } else if (i == 2 || i == 4 || i == 6) {
+      // motor, grip, transmisson
       element.style.display = "block";
       element.style.position = "relative";
-      element.style.paddingBottom = "40px";
+      element.style.paddingBottom = "60px"; // von 40px auf 50px erhöhen
     } else {
       element.style.display = "block";
     }
   }
 }
+
+
+
+
+
+/* --------------------------
+    Upgrade Functions
+-------------------------- */
+function upgradeMotor() {
+  
+}
+
+function upgradeGrip() {
+  
+}
+
+function upgradeTransmission() {
+  
+}
+
+function showUpgradeCarImg() {
+  SCREEN[1][8].src = "./assets/img/kart-upgrade.png";
+}
+
 
 /* --------------------------
     window.onload Functions
