@@ -154,14 +154,13 @@ body {
     font-size: 14px;
 }
 
-#img-of-kart img {
+#img-of-kart {
     height: 100%;
     width: auto;
     image-rendering: pixelated;
     position: absolute;
     bottom: 50%;
-    left: 5%;
-    height: 50%;
+    height: 20%;
     width: auto;
     margin-left: auto;
     margin-right: auto;
