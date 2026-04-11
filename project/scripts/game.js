@@ -1,9 +1,12 @@
+/* --------------------------
+    Global Variables
+-------------------------- */
+
 const SCREEN = [
   [
     document.getElementById("hub"),
     document.getElementById("hub-image"),
     document.getElementById("player-box"),
-    document.getElementById("hub-elements"),
     document.getElementById("goToGarage-button"),
     document.getElementById("live1"),
     document.getElementById("live2"),
@@ -33,6 +36,20 @@ const UPGRADES = [
   0, /* grip */
   0, /* transmisson */
 ]
+
+const collectibles = 0;
+
+
+
+/* --------------------------
+    Hub Functions
+-------------------------- */
+
+
+
+/* --------------------------
+    Screen Functions
+-------------------------- */
 
 function showHub() {
   SCREEN[0].forEach((element) => {

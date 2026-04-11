@@ -13,9 +13,13 @@ body {
 ----------------- */
 
 #hub-image {
-    width: 100%;
+    width: 300%;
     height: auto;
-    display: absolute;
+    image-rendering: pixelated;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 #player-box {
