@@ -28,6 +28,12 @@ const SCREEN = [
   ],
 ];
 
+const UPGRADES = [
+  0, /* motor */
+  0, /* grip */
+  0, /* transmisson */
+]
+
 function showHub() {
   SCREEN[0].forEach((element) => {
     element.style.display = "block";
@@ -74,19 +80,38 @@ function showGarage() {
     Upgrade Functions
 -------------------------- */
 function upgradeMotor() {
+  if (UPGRADES[0] != 7) {
+    UPGRADES[0]++;
+    showUpgradeCarImg();
+  } else {
+    alert("Motor is already at max level!");
+  }
   
 }
 
 function upgradeGrip() {
-  
+  if (UPGRADES[1] != 7) {
+    UPGRADES[1]++;
+    showUpgradeCarImg();
+  } else {
+    alert("Grip is already at max level!");
+  }
 }
 
 function upgradeTransmission() {
-  
+  if (UPGRADES[2] != 7) {
+    UPGRADES[2]++;
+    showUpgradeCarImg();
+  } else {
+    alert("Transmission is already at max level!");
+  }
 }
 
 function showUpgradeCarImg() {
-  SCREEN[1][8].src = "./assets/img/kart-upgrade.png";
+  SCREEN[1][8].src = "./assets/img/F1-Car-Garage-upgrading-version2.png";
+  setTimeout(() => {
+    SCREEN[1][8].src = "./assets/img/F1-Car-Garage.png";
+  }, 1000);
 }
 
 
