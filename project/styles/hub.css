@@ -17,8 +17,8 @@ body {
     height: auto;
     image-rendering: pixelated;
     position: absolute;
-    top: 50%;
-    left: 50%;
+    top: 512px;
+    left: 512px;
     transform: translate(-50%, -50%);
 }
 
