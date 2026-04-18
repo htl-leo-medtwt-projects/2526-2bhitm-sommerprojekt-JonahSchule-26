@@ -13,21 +13,39 @@
 
 <body>
     <section id="hub">
-        <img src="./assets/img/the-hub-big-size.png" alt="The Hub" id="hub-image">
+        <img src="./assets/img/the-hub.png" alt="The Hub" id="hub-image">
         <div id="player-box"><img src="" alt="Player"></div>
-            <button onclick="showGarage()" id="goToGarage-button">Garage</button>
-            <div id="lives">
-                Lives left:
-                <img src="./assets/img/Heart.png" alt="Live Full" class="live" id="live1">
-                <img src="./assets/img/Heart.png" alt="Live Full" class="live" id="live2">
-                <img src="./assets/img/Heart.png" alt="Live Full" class="live" id="live3">
+
+        <!-- RACES -->
+        <button type="button" class="enter-race" id="race-button-1">Enter Race</button>
+        <button type="button" class="enter-race" id="race-button-2">Enter Race</button>
+        <button type="button" class="enter-race" id="race-button-3">Enter Race</button>
+        <button type="button" class="enter-race" id="race-button-4">Enter Race</button>
+        <button type="button" class="enter-race" id="race-button-5">Enter Race</button>
+        <button type="button" class="enter-race" id="race-button-6">Enter Race</button>
+        <button type="button" class="enter-race" id="race-button-7">Enter Race</button>
+        <button type="button" class="enter-race" id="race-button-8">Enter Race</button>
+        <button type="button" class="enter-race" id="race-button-9">Enter Race</button>
+        <button type="button" class="enter-race" id="race-button-10">Enter Race</button>
+        <button type="button" class="enter-race" id="race-button-11">Enter Race</button>
+        <button type="button" class="enter-race" id="race-button-12">Enter Race</button>
+        <button type="button" class="enter-race" id="race-button-13">Enter Race</button>
+        <button type="button" class="enter-race" id="race-button-14">Enter Race</button>
+
+
+        <button onclick="showGarage()" id="goToGarage-button">Garage</button>
+        <div id="lives">
+            Lives left:
+            <img src="./assets/img/Heart.png" alt="Live Full" class="live" id="live1">
+            <img src="./assets/img/Heart.png" alt="Live Full" class="live" id="live2">
+            <img src="./assets/img/Heart.png" alt="Live Full" class="live" id="live3">
+        </div>
+        <div id="garage-power">
+            <div id="power-text">Power: 0</div>
+            <div id="power-bar">
+                <div id="power-fill"></div>
             </div>
-            <div id="garage-power">
-                <div id="power-text">Power: 0</div>
-                <div id="power-bar">
-                    <div id="power-fill"></div>
-                </div>
-            </div>
+        </div>
     </section>
     <section id="garage">
         <div id="upgrade-grid">
