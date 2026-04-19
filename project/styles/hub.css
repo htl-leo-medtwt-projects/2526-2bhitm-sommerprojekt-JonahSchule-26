@@ -197,18 +197,36 @@ body {
 
 
 
-
+/* -----------------
+    RACE BUTTONS
+----------------- */
 
 .enter-race {
     font-size: large;
     background: linear-gradient(90deg,rgba(0, 91, 255, 1) 0%, rgba(0, 194, 255, 1) 100%);
     border-radius: 0.5rem;
     border: none;
-    font-size: xx-large;
     padding-left: 10px;
     padding-right: 10px;
     padding-top: 5px;
     padding-bottom: 5px;
     font-family: f1Font, sans-serif;
     position: absolute;
+}
+
+#race-button-1 {
+    top: 0vh;
+    left: 50vw;
+    transform: translateX(-40%);
+}
+
+#race-button-2 {
+    top: 5vh;
+    left: 65vw;
+    transform: translateX(-45%);
+}
+
+#race-button-3 {
+    top: 13vh;
+    left: 76.5vw;
 }
