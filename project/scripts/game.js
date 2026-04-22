@@ -94,7 +94,7 @@ function initPlayerSprite() {
     playerBox.appendChild(playerImg);
   }
   
-  // Styles für das Player-Box
+  // Styles für die Player-Box
   if (playerBox) {
     playerBox.style.position = 'absolute';
     playerBox.style.width = SPRITE_CONFIG.frameWidth + 'px';
@@ -136,7 +136,6 @@ function updateSpriteFrame() {
   }
 }
 
-// Demo-Sprite-Generator (falls kein Sprite-Sheet vorhanden)
 function generateDemoSprite(row, col) {
   const canvas = document.createElement('canvas');
   canvas.width = SPRITE_CONFIG.frameWidth;
@@ -146,10 +145,10 @@ function generateDemoSprite(row, col) {
   // Hintergrundfarbe basierend auf Richtung
   let baseColor;
   switch(row) {
-    case 0: baseColor = '#FF4444'; break; // Unten - Rot
-    case 1: baseColor = '#44FF44'; break; // Links - Grün
-    case 2: baseColor = '#4444FF'; break; // Rechts - Blau
-    case 3: baseColor = '#FFFF44'; break; // Oben - Gelb
+    case 0: baseColor = '#FF4444'; break;
+    case 1: baseColor = '#44FF44'; break;
+    case 2: baseColor = '#4444FF'; break;
+    case 3: baseColor = '#FFFF44'; break;
     default: baseColor = '#FFFFFF';
   }
   
