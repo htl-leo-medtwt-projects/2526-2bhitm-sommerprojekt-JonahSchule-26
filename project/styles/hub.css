@@ -230,3 +230,69 @@ body {
     top: 13vh;
     left: 76.5vw;
 }
+
+#race-button-4 {
+    top: 26vh;
+    left: 89.5vw;
+    transform: translateX(-50%);
+}
+
+#race-button-5 {
+    top: 42vh;
+    left: 96vw;
+    transform: translateX(-40%);
+}
+
+#race-button-6 {
+    top: 60vh;
+    left: 87.5vw;
+    transform: translateX(-50%);
+}
+
+#race-button-7 {
+    top: 68vh;
+    left: 71vw;
+    transform: translateX(-45%);
+}
+
+#race-button-8 {
+    top: 73vh;
+    left: 50vw;
+    transform: translateX(-40%);
+}
+
+#race-button-9 {
+    top: 68vh;
+    left: 29vw;
+    transform: translateX(-45%);
+}
+
+#race-button-10 {
+    top: 60vh;
+    left: 13.5vw;
+    transform: translateX(-50%);
+}
+
+#race-button-11 {
+    top: 42vh;
+    left: 3.5vw;
+    transform: translateX(-40%);
+}
+
+#race-button-12 {
+    top: 24.5vh;
+    left: 11vw;
+    transform: translateX(-50%);
+}
+
+#race-button-13 {
+    top: 13vh;
+    left: 22vw;
+    transform: translateX(-45%);
+}
+
+#race-button-14 {
+    top: 4.9vh;
+    left: 35vw;
+    transform: translateX(-40%);
+}
