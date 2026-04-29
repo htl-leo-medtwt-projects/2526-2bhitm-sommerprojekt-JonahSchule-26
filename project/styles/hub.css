@@ -115,7 +115,7 @@ body {
     height: 100%;
     background-image: url(./../assets/img/garage.png);
     background-size: cover;
-
+    display: none;
     z-index: 10;
 }
 
@@ -295,4 +295,21 @@ body {
     top: 4.9vh;
     left: 35vw;
     transform: translateX(-40%);
+}
+
+
+
+
+/* ----------
+    RACES
+   ---------- */
+
+   #race {
+    display: none;
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    background: black;
+    z-index: 9999;
 }
