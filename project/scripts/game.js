@@ -1,78 +1,5 @@
-window.addEventListener("DOMContentLoaded", () => {
-   initGame()
-})
-
-
-function initGame() {
-
-    const raceSection = document.getElementById("race")
-
-    kaboom({
-        global: true,
-        width: window.innerWidth,
-        height: window.innerHeight,
-    })
-
-    loadSprite("car", "./assets/img/kart-sprite-img.png", {
-        sliceX: 6,
-        sliceY: 4,
-        anims: {
-            drive: { from: 0, to: 5, loop: true, speed: 12 },
-        },
-    })
-
-    scene("hub", () => {
-        raceSection.style.display = "none"
-
-        add([
-            text("HUB", { size: 32 }),
-            pos(width() / 2, height() / 2),
-            anchor("center"),
-        ])
-    })
-
-    scene("race", () => {
-        raceSection.style.display = "block"
-
-        const car = add([
-            sprite("car"),
-            pos(width() / 2, height() - 150),
-            area(),
-        ])
-
-        car.play("drive")
-
-        onKeyDown("left", () => car.move(-500, 0))
-        onKeyDown("right", () => car.move(500, 0))
-
-        loop(1, () => {
-            add([
-                rect(60, 60),
-                pos(rand(0, width()), -50),
-                move(DOWN, 400),
-                area(),
-                "obstacle",
-            ])
-        })
-
-        car.onCollide("obstacle", (o) => {
-            destroy(o)
-            shake(8)
-        })
-    })
-
-    document.querySelectorAll(".enter-race").forEach(btn => {
-        btn.addEventListener("click", () => {
-            go("race")
-        })
-    })
-
-    go("hub")
-}
-
-
 /* =========================================================
-   GLOBAL DOM REFERENCES (HUB + GARAGE BLEIBT)
+   DOM REFERENCES
 ========================================================= */
 
 const SCREEN = [
@@ -104,35 +31,38 @@ const SCREEN = [
   ],
 ];
 
-const UPGRADES = [0, 0, 0];
-
-const GAME_CONFIG = {
-  characterSpeed: 5,
-};
+const raceSection = document.getElementById("race");
 
 /* =========================================================
-   SCREEN FUNCTIONS (UNVERÄNDERT)
+   GAME STATE
+========================================================= */
+
+const UPGRADES = [0, 0, 0];
+let lives = 3;
+let raceRunning = false;
+
+/* =========================================================
+   SCREEN FUNCTIONS
 ========================================================= */
 
 function showHub() {
-  SCREEN[0].forEach(el => el && (el.style.display = "block"));
-  SCREEN[1].forEach(el => el && (el.style.display = "none"));
+  SCREEN[0].forEach((el) => el && (el.style.display = "block"));
+  SCREEN[1].forEach((el) => el && (el.style.display = "none"));
+  raceSection.style.display = "none";
 }
 
 function showGarage() {
-  SCREEN[0].forEach(el => el && (el.style.display = "none"));
-  SCREEN[1].forEach(el => el && (el.style.display = "block"));
+  SCREEN[0].forEach((el) => el && (el.style.display = "none"));
+  SCREEN[1].forEach((el) => el && (el.style.display = "block"));
+  raceSection.style.display = "none";
 }
 
 /* =========================================================
-   UPGRADES (UNVERÄNDERT, aber jetzt nutzbar für Race später)
+   UPGRADE FUNCTIONS
 ========================================================= */
 
 function upgradeMotor() {
-  if (UPGRADES[0] < 7) {
-    UPGRADES[0]++;
-    GAME_CONFIG.characterSpeed = 5 + UPGRADES[0] * 0.5;
-  }
+  if (UPGRADES[0] < 7) UPGRADES[0]++;
 }
 
 function upgradeGrip() {
@@ -144,149 +74,146 @@ function upgradeTransmission() {
 }
 
 /* =========================================================
-   KABOOM SETUP
+   KABOOM INIT
 ========================================================= */
 
 kaboom({
   global: true,
   width: window.innerWidth,
   height: window.innerHeight,
-})
+  root: raceSection,
+});
 
 /* =========================================================
    SPRITES
 ========================================================= */
 
-loadSprite("player", "../assets/img/sprite.jpg", {
+loadSprite("player", "assets/img/sprite.jpg");
+loadSprite("tyre1", "assets/img/tyre.png");
+loadSprite("tyre2", "assets/img/tire-stack-1.jpeg.jpg");
+loadSprite("tyre3", "assets/img/tire-stack-2.jpeg");
+
+loadSprite("car", "assets/img/kart-sprite-img.png", {
   sliceX: 6,
   sliceY: 4,
   anims: {
-    walk: { from: 0, to: 5, loop: true, speed: 10 },
+    drive: {
+      from: 0,
+      to: 5,
+      loop: true,
+      speed: 12,
+    },
   },
-})
-
-loadSprite("car", "../assets/img/kart-sprite-img.png", {
-  sliceX: 6,
-  sliceY: 4,
-  anims: {
-    drive: { from: 0, to: 5, loop: true, speed: 12 },
-  },
-})
-
-/* =========================================================
-   STATE
-========================================================= */
-
-let lives = 3
-let raceRunning = false
-
-const raceSection = document.getElementById("race")
+});
 
 /* =========================================================
    HUB SCENE
 ========================================================= */
 
 scene("hub", () => {
+  showHub();
 
-  raceSection.style.display = "none"
-
-  add([
+  const player = add([
     sprite("player"),
     pos(width() / 2, height() / 2),
     anchor("center"),
     scale(2),
-  ]).play("walk")
-})
+  ]);
+
+  player.play("walk");
+});
 
 /* =========================================================
    RACE SCENE
 ========================================================= */
 
 scene("race", () => {
-
   raceSection.style.display = "block"
+
   lives = 3
   raceRunning = true
 
-  const speed = 500 + UPGRADES[0] * 50
+  const speed = 450 + UPGRADES[0] * 60
+
+  /* =========================
+     CAR
+  ========================= */
 
   const car = add([
     sprite("car"),
-    pos(width() / 2, height() - 150),
+    pos(width() / 2, height() - 160),
     area(),
     anchor("center"),
-    scale(2),
+    scale(0.7),
   ])
 
   car.play("drive")
 
-  /* -------------------------
-     MOVEMENT
-  ------------------------- */
+  /* =========================
+     CONTROLS
+  ========================= */
 
-  onKeyDown("left", () => {
-    car.move(-speed, 0)
-  })
+  onKeyDown("left", () => car.move(-speed, 0))
+  onKeyDown("right", () => car.move(speed, 0))
 
-  onKeyDown("right", () => {
-    car.move(speed, 0)
-  })
+  /* =========================
+     OBSTACLES (ONLY ONE SYSTEM)
+  ========================= */
 
-  /* -------------------------
-     OBSTACLES
-  ------------------------- */
+  const tires = ["tyre1", "tyre2", "tyre3"]
 
-  loop(1, () => {
+  loop(0.8, () => {
     if (!raceRunning) return
 
     add([
-      rect(60, 60),
-      pos(rand(0, width()), -50),
-      move(DOWN, 400 + UPGRADES[1] * 30),
+      sprite(choose(tires)),
+      pos(rand(80, width() - 80), -120),
       area(),
+      move(DOWN, rand(260, 260)),
+      scale(0.25),   // <<< FIX: deutlich kleiner
+      anchor("center"),
       "obstacle",
     ])
   })
 
-  /* -------------------------
+  /* =========================
      COLLISION
-  ------------------------- */
+  ========================= */
 
   car.onCollide("obstacle", (o) => {
     destroy(o)
-    lives--
-    shake(8)
+    shake(6)
 
-    if (lives <= 0) {
-      raceRunning = false
-      go("hub")
-    }
+    car.pos.x += rand(-15, 15)
   })
 
-  /* -------------------------
-     UI
-  ------------------------- */
+  /* =========================
+     UI FIX
+  ========================= */
 
-  add([
-    text(() => `Lives: ${lives}`, { size: 24 }),
+  const livesText = add([
+    text("Lives: 3"),
     pos(20, 20),
+    fixed(),
   ])
+
+  onUpdate(() => {
+    livesText.text = `Lives: ${lives}`
+  })
 })
 
 /* =========================================================
-   BUTTONS -> RACE
+   BUTTON EVENTS
 ========================================================= */
 
-document.querySelectorAll(".enter-race").forEach(btn => {
+document.querySelectorAll(".enter-race").forEach((btn) => {
   btn.addEventListener("click", () => {
-    go("race")
-  })
-})
+    go("race");
+  });
+});
 
 /* =========================================================
    START
 ========================================================= */
 
-showHub()
-go("hub")
-
+go("hub");
