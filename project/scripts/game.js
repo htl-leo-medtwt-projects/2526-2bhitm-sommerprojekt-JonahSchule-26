@@ -128,79 +128,148 @@ scene("hub", () => {
 ========================================================= */
 
 scene("race", () => {
-  raceSection.style.display = "block"
+  raceSection.style.display = "block";
 
-  lives = 3
-  raceRunning = true
+  lives = 3;
+  raceRunning = true;
 
-  const speed = 450 + UPGRADES[0] * 60
+  /* -------------------------
+     LANES
+  ------------------------- */
+  const lanes = [width() * 0.3, width() * 0.5, width() * 0.7];
 
-  /* =========================
+  let laneIndex = 1;
+
+  const speed = 500 + UPGRADES[0] * 60;
+
+  /* -------------------------
      CAR
-  ========================= */
-
+  ------------------------- */
   const car = add([
     sprite("car"),
-    pos(width() / 2, height() - 160),
+    pos(lanes[laneIndex], height() - 140),
     area(),
     anchor("center"),
-    scale(0.7),
-  ])
+    scale(0.6),
+  ]);
 
-  car.play("drive")
+  car.play("drive");
 
-  /* =========================
-     CONTROLS
-  ========================= */
+  function updateCar() {
+    car.pos.x = lanes[laneIndex];
+  }
 
-  onKeyDown("left", () => car.move(-speed, 0))
-  onKeyDown("right", () => car.move(speed, 0))
+  /* -------------------------
+     CONTROLS (LANES ONLY)
+  ------------------------- */
+  onKeyPress("left", () => {
+    laneIndex = Math.max(0, laneIndex - 1);
+    updateCar();
+  });
 
-  /* =========================
-     OBSTACLES (ONLY ONE SYSTEM)
-  ========================= */
+  onKeyPress("right", () => {
+    laneIndex = Math.min(2, laneIndex + 1);
+    updateCar();
+  });
 
-  const tires = ["tyre1", "tyre2", "tyre3"]
+  /* -------------------------
+     TIRES (YOUR VALUES KEPT)
+  ------------------------- */
+  const tires = ["tyre1", "tyre2", "tyre3"];
 
-  loop(0.8, () => {
-    if (!raceRunning) return
+  const tireConfig = {
+    tyre1: { scale: 0.25, speed: 260 },
+    tyre2: { scale: 0.225, speed: 260 },
+    tyre3: { scale: 0.1125, speed: 260 },
+  };
+
+  function spawnTire() {
+    const lane = choose(lanes);
+    const type = choose(tires);
+    const cfg = tireConfig[type];
 
     add([
-      sprite(choose(tires)),
-      pos(rand(80, width() - 80), -120),
+      sprite(type),
+      pos(lane, -120),
       area(),
-      move(DOWN, rand(260, 260)),
-      scale(0.25),   // <<< FIX: deutlich kleiner
       anchor("center"),
+      scale(cfg.scale),
+      move(DOWN, cfg.speed),
       "obstacle",
-    ])
-  })
+    ]);
+  }
 
-  /* =========================
+  /* -------------------------
+     RANDOM SPAWN (sometimes NONE)
+  ------------------------- */
+  loop(0.9, () => {
+    if (!raceRunning) return;
+
+    // 50% chance KEIN Spawn
+    if (chance(0.25)) return;
+
+    spawnTire();
+  });
+
+  /* -------------------------
      COLLISION
-  ========================= */
-
+  ------------------------- */
   car.onCollide("obstacle", (o) => {
-    destroy(o)
-    shake(6)
+    destroy(o);
+    shake(6);
+  });
 
-    car.pos.x += rand(-15, 15)
-  })
-
-  /* =========================
-     UI FIX
-  ========================= */
-
-  const livesText = add([
-    text("Lives: 3"),
-    pos(20, 20),
-    fixed(),
-  ])
+  /* -------------------------
+     UI
+  ------------------------- */
+  const ui = add([text("Lives: 3"), pos(20, 20), fixed()]);
 
   onUpdate(() => {
-    livesText.text = `Lives: ${lives}`
-  })
-})
+    ui.text = `Lives: ${lives}`;
+  });
+
+  /* -------------------------
+     FINISH LINE (30 SECONDS)
+  ------------------------- */
+wait(30, () => {
+  raceRunning = false;
+
+  let finished = false;
+
+  const finishLine = add([
+    rect(width(), 80),
+    pos(0, -100),
+    color(255, 255, 255),
+    fixed(),
+    move(DOWN, 260),
+    area(),
+    outline(6),
+  ]);
+
+  add([
+    text("FINISH", { size: 64 }),
+    pos(width() / 2, -60),
+    anchor("center"),
+    fixed(),
+    move(DOWN, 260),
+  ]);
+
+  /* -------------------------
+     WARTET BIS LINIE RAUS IST
+  ------------------------- */
+  finishLine.onUpdate(() => {
+    if (finished) return;
+
+    if (finishLine.pos.y > height() + 100) {
+      finished = true;
+
+      wait(0.5, () => {
+        go("hub");
+      });
+    }
+  });
+});
+});
 
 /* =========================================================
    BUTTON EVENTS
