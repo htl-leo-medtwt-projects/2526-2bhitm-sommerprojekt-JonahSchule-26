@@ -48,12 +48,37 @@ let raceRunning = false;
 function showHub() {
   SCREEN[0].forEach((el) => el && (el.style.display = "block"));
   SCREEN[1].forEach((el) => el && (el.style.display = "none"));
+
   raceSection.style.display = "none";
+  raceSection.style.pointerEvents = "none";
 }
 
 function showGarage() {
   SCREEN[0].forEach((el) => el && (el.style.display = "none"));
-  SCREEN[1].forEach((el) => el && (el.style.display = "block"));
+
+  for (let i = 0; i < SCREEN[1].length; i++) {
+    let element = SCREEN[1][i];
+    if (!element) continue;
+
+    if (i === 1) {
+      element.style.display = "grid";
+    } else if (i === 0) {
+      element.style.display = "block";
+    } else if (i === 3 || i === 5 || i === 7) {
+      element.style.display = "block";
+      element.style.position = "absolute";
+      element.style.bottom = "10px";
+      element.style.left = "50%";
+      element.style.transform = "translateX(-50%)";
+    } else if (i === 2 || i === 4 || i === 6) {
+      element.style.display = "block";
+      element.style.position = "relative";
+      element.style.paddingBottom = "60px";
+    } else {
+      element.style.display = "block";
+    }
+  }
+
   raceSection.style.display = "none";
 }
 
@@ -62,15 +87,42 @@ function showGarage() {
 ========================================================= */
 
 function upgradeMotor() {
-  if (UPGRADES[0] < 7) UPGRADES[0]++;
+  if (UPGRADES[0] < 7) {
+    UPGRADES[0]++;
+    updateUpgradeBars();
+  }
 }
 
 function upgradeGrip() {
-  if (UPGRADES[1] < 7) UPGRADES[1]++;
+  if (UPGRADES[1] < 7) {
+    UPGRADES[1]++;
+    updateUpgradeBars();
+  }
 }
 
 function upgradeTransmission() {
-  if (UPGRADES[2] < 7) UPGRADES[2]++;
+  if (UPGRADES[2] < 7) {
+    UPGRADES[2]++;
+    updateUpgradeBars();
+  }
+}
+
+function updateUpgradeBars() {
+  const bars = [
+    document.querySelectorAll("#motor-bar span"),
+    document.querySelectorAll("#grip-bar span"),
+    document.querySelectorAll("#transmission-bar span")
+  ];
+
+  bars.forEach((bar, i) => {
+    bar.forEach((segment, index) => {
+      if (index < UPGRADES[i]) {
+        segment.classList.add("active");
+      } else {
+        segment.classList.remove("active");
+      }
+    });
+  });
 }
 
 /* =========================================================
@@ -94,12 +146,12 @@ loadSprite("tyre2", "assets/img/tire-stack-1.jpeg.jpg");
 loadSprite("tyre3", "assets/img/tire-stack-2.jpeg");
 
 loadSprite("car", "assets/img/kart-sprite-img.png", {
-  sliceX: 6,
+  sliceX: 4,
   sliceY: 4,
   anims: {
     drive: {
       from: 0,
-      to: 5,
+      to: 3,
       loop: true,
       speed: 12,
     },
@@ -143,6 +195,46 @@ scene("race", () => {
   const speed = 500 + UPGRADES[0] * 60;
 
   /* -------------------------
+     TRACK VISUALS
+  ------------------------- */
+
+  function spawnLaneLine(x) {
+    add([
+      rect(12, 80),
+      pos(x, -100),
+      color(255, 255, 255),
+      move(DOWN, 260),
+      anchor("center"),
+    ]);
+  }
+
+  function spawnBorderBlock(x, isRed) {
+    add([
+      rect(40, 100),
+      pos(x, -120),
+      color(...(isRed ? [255, 0, 0] : [255, 255, 255])),
+      move(DOWN, 260),
+      anchor("center"),
+    ]);
+  }
+
+  let borderToggle = true;
+
+  loop(0.35, () => {
+    if (!raceRunning) return;
+
+    // Spur-Linien
+    spawnLaneLine(width() * 0.4);
+    spawnLaneLine(width() * 0.6);
+
+    // Rand
+    spawnBorderBlock(lanes[0] - 150, borderToggle);
+    spawnBorderBlock(lanes[2] + 150, !borderToggle);
+
+    borderToggle = !borderToggle;
+  });
+
+  /* -------------------------
      CAR
   ------------------------- */
   const car = add([
@@ -160,7 +252,7 @@ scene("race", () => {
   }
 
   /* -------------------------
-     CONTROLS (LANES ONLY)
+     CONTROLS
   ------------------------- */
   onKeyPress("left", () => {
     laneIndex = Math.max(0, laneIndex - 1);
@@ -173,7 +265,7 @@ scene("race", () => {
   });
 
   /* -------------------------
-     TIRES (YOUR VALUES KEPT)
+     TIRES
   ------------------------- */
   const tires = ["tyre1", "tyre2", "tyre3"];
 
@@ -200,12 +292,11 @@ scene("race", () => {
   }
 
   /* -------------------------
-     RANDOM SPAWN (sometimes NONE)
+     RANDOM SPAWN
   ------------------------- */
   loop(0.9, () => {
     if (!raceRunning) return;
 
-    // 50% chance KEIN Spawn
     if (chance(0.25)) return;
 
     spawnTire();
@@ -229,47 +320,44 @@ scene("race", () => {
   });
 
   /* -------------------------
-     FINISH LINE (30 SECONDS)
+     FINISH LINE
   ------------------------- */
-wait(30, () => {
-  raceRunning = false;
+  wait(30, () => {
+    raceRunning = false;
 
-  let finished = false;
+    let finished = false;
 
-  const finishLine = add([
-    rect(width(), 80),
-    pos(0, -100),
-    color(255, 255, 255),
-    fixed(),
-    move(DOWN, 260),
-    area(),
-    outline(6),
-  ]);
+    const finishLine = add([
+      rect(width(), 80),
+      pos(0, -100),
+      color(255, 255, 255),
+      fixed(),
+      move(DOWN, 260),
+      area(),
+      outline(6),
+    ]);
 
-  add([
-    text("FINISH", { size: 64 }),
-    pos(width() / 2, -60),
-    anchor("center"),
-    fixed(),
-    move(DOWN, 260),
-    color(0, 0, 0)
-  ]);
+    add([
+      text("FINISH", { size: 64 }),
+      pos(width() / 2, -60),
+      anchor("center"),
+      fixed(),
+      move(DOWN, 260),
+      color(0, 0, 0),
+    ]);
 
-  /* -------------------------
-     WARTET BIS LINIE RAUS IST
-  ------------------------- */
-  finishLine.onUpdate(() => {
-    if (finished) return;
+    finishLine.onUpdate(() => {
+      if (finished) return;
 
-    if (finishLine.pos.y > height() + 100) {
-      finished = true;
+      if (finishLine.pos.y > height() + 100) {
+        finished = true;
 
-      wait(0.5, () => {
-        go("hub");
-      });
-    }
+        wait(0.5, () => {
+          go("hub");
+        });
+      }
+    });
   });
-});
 });
 
 /* =========================================================
