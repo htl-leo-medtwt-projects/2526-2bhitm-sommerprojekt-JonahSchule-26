@@ -210,13 +210,23 @@ scene("race", () => {
   raceRunning = true;
 
   /* -------------------------
-     LANES
+     LANES (TIRES + POSITION)
   ------------------------- */
   const lanes = [width() * 0.3, width() * 0.5, width() * 0.7];
 
-  let laneIndex = 1;
+  /* -------------------------
+     CAR PHYSICS (NEW SYSTEM)
+  ------------------------- */
+  let carVelX = 0;
+  let input = 0;
 
-  const laneChangeSpeed = 200 + UPGRADES[2] * 20;
+  const accel = 90;
+
+  const maxSpeed = 8 + UPGRADES[0] * 1.5; 
+  // MOTOR -> schneller
+
+  const grip = 0.88 + UPGRADES[1] * 0.015; 
+  // GRIP -> weniger drift
 
   /* -------------------------
      TRACK VISUALS
@@ -261,7 +271,7 @@ scene("race", () => {
   ------------------------- */
   const car = add([
     sprite("car"),
-    pos(lanes[laneIndex], height() - 140),
+    pos(lanes[1], height() - 140),
     area(),
     anchor("center"),
     scale(0.6),
@@ -270,33 +280,35 @@ scene("race", () => {
   car.play("drive");
 
   /* -------------------------
-     SMOOTH MOVEMENT (FIX)
+     INPUT
   ------------------------- */
-  function updateCar() {
-    car.moveTo(
-      lanes[laneIndex],
-      car.pos.y,
-      laneChangeSpeed
-    );
-  }
+  onKeyDown("a", () => input = -1);
+  onKeyDown("d", () => input = 1);
 
-  /* -------------------------
-     CONTROLS
-  ------------------------- */
-  onKeyDown("a", () => {
-    laneIndex = Math.max(0, laneIndex - 1);
-    updateCar();
-    console.log("left");
+  onKeyRelease("a", () => {
+    if (!isKeyDown("d")) input = 0;
   });
 
-  onKeyDown("d", () => {
-    laneIndex = Math.min(2, laneIndex + 1);
-    updateCar();
-    console.log("right");
+  onKeyRelease("d", () => {
+    if (!isKeyDown("a")) input = 0;
   });
 
   /* -------------------------
-     TIRES
+     MOVEMENT (SMOOTH + GRIP)
+  ------------------------- */
+  onUpdate(() => {
+    if (!raceRunning) return;
+
+    carVelX += input * accel * dt();
+    carVelX = clamp(carVelX, -maxSpeed, maxSpeed);
+
+    carVelX *= grip;
+
+    car.pos.x += carVelX * 60 * dt();
+  });
+
+  /* -------------------------
+     TIRES (UNCHANGED SYSTEM)
   ------------------------- */
   const tires = ["tyre1", "tyre2", "tyre3"];
 
@@ -338,21 +350,10 @@ scene("race", () => {
   });
 
   /* -------------------------
-     UI
-  ------------------------- */
-  const ui = add([text("Lives: 3"), pos(20, 20), fixed()]);
-
-  onUpdate(() => {
-    ui.text = `Lives: ${lives}`;
-  });
-
-  /* -------------------------
-     FINISH LINE
+     FINISH
   ------------------------- */
   wait(30, () => {
     raceRunning = false;
-
-    let finished = false;
 
     const finishLine = add([
       rect(width(), 80),
@@ -374,14 +375,8 @@ scene("race", () => {
     ]);
 
     finishLine.onUpdate(() => {
-      if (finished) return;
-
-      if (finishLine.pos.y > height() + 100) {
-        finished = true;
-
-        wait(0.5, () => {
-          go("hub");
-        });
+      if (finishLine.pos.y > height() + 120) {
+        wait(0.5, () => go("hub"));
       }
     });
   });
