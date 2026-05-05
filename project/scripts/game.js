@@ -109,19 +109,47 @@ function upgradeTransmission() {
 
 function updateUpgradeBars() {
   const bars = [
-    document.querySelectorAll("#motor-bar span"),
-    document.querySelectorAll("#grip-bar span"),
-    document.querySelectorAll("#transmission-bar span")
+    "motor-bar",
+    "grip-bar",
+    "transmission-bar"
   ];
 
-  bars.forEach((bar, i) => {
-    bar.forEach((segment, index) => {
-      if (index < UPGRADES[i]) {
-        segment.classList.add("active");
-      } else {
-        segment.classList.remove("active");
+  bars.forEach((id, i) => {
+    const bar = document.getElementById(id);
+    if (!bar) return;
+
+    bar.innerHTML = "";
+
+    for (let j = 0; j < 7; j++) {
+      const span = document.createElement("span");
+
+      if (j < UPGRADES[i]) {
+        span.classList.add("active");
       }
-    });
+
+      bar.appendChild(span);
+    }
+  });
+}
+
+function renderUpgradeBars() {
+  const bars = [
+    "motor-bar",
+    "grip-bar",
+    "transmission-bar"
+  ];
+
+  bars.forEach((id, i) => {
+    const bar = document.getElementById(id);
+    if (!bar) return;
+
+    bar.innerHTML = "";
+
+    for (let j = 0; j < 7; j++) {
+      const seg = document.createElement("span");
+      if (j < UPGRADES[i]) seg.classList.add("active");
+      bar.appendChild(seg);
+    }
   });
 }
 
@@ -181,6 +209,8 @@ scene("hub", () => {
 
 scene("race", () => {
   raceSection.style.display = "block";
+
+  focus();
 
   lives = 3;
   raceRunning = true;
@@ -375,3 +405,4 @@ document.querySelectorAll(".enter-race").forEach((btn) => {
 ========================================================= */
 
 go("hub");
+renderUpgradeBars();
