@@ -108,11 +108,7 @@ function upgradeTransmission() {
 }
 
 function updateUpgradeBars() {
-  const bars = [
-    "motor-bar",
-    "grip-bar",
-    "transmission-bar"
-  ];
+  const bars = ["motor-bar", "grip-bar", "transmission-bar"];
 
   bars.forEach((id, i) => {
     const bar = document.getElementById(id);
@@ -133,11 +129,7 @@ function updateUpgradeBars() {
 }
 
 function renderUpgradeBars() {
-  const bars = [
-    "motor-bar",
-    "grip-bar",
-    "transmission-bar"
-  ];
+  const bars = ["motor-bar", "grip-bar", "transmission-bar"];
 
   bars.forEach((id, i) => {
     const bar = document.getElementById(id);
@@ -210,7 +202,9 @@ scene("hub", () => {
 scene("race", () => {
   raceSection.style.display = "block";
 
-  focus();
+  setTimeout(() => {
+    document.querySelector("canvas")?.focus();
+  }, 50);
 
   lives = 3;
   raceRunning = true;
@@ -222,7 +216,7 @@ scene("race", () => {
 
   let laneIndex = 1;
 
-  const speed = 500 + UPGRADES[0] * 60;
+  const laneChangeSpeed = 200 + UPGRADES[2] * 20;
 
   /* -------------------------
      TRACK VISUALS
@@ -253,11 +247,9 @@ scene("race", () => {
   loop(0.35, () => {
     if (!raceRunning) return;
 
-    // Spur-Linien
     spawnLaneLine(width() * 0.4);
     spawnLaneLine(width() * 0.6);
 
-    // Rand
     spawnBorderBlock(lanes[0] - 150, borderToggle);
     spawnBorderBlock(lanes[2] + 150, !borderToggle);
 
@@ -277,21 +269,30 @@ scene("race", () => {
 
   car.play("drive");
 
+  /* -------------------------
+     SMOOTH MOVEMENT (FIX)
+  ------------------------- */
   function updateCar() {
-    car.pos.x = lanes[laneIndex];
+    car.moveTo(
+      lanes[laneIndex],
+      car.pos.y,
+      laneChangeSpeed
+    );
   }
 
   /* -------------------------
      CONTROLS
   ------------------------- */
-  onKeyPress("left", () => {
+  onKeyDown("a", () => {
     laneIndex = Math.max(0, laneIndex - 1);
     updateCar();
+    console.log("left");
   });
 
-  onKeyPress("right", () => {
+  onKeyDown("d", () => {
     laneIndex = Math.min(2, laneIndex + 1);
     updateCar();
+    console.log("right");
   });
 
   /* -------------------------
@@ -321,12 +322,8 @@ scene("race", () => {
     ]);
   }
 
-  /* -------------------------
-     RANDOM SPAWN
-  ------------------------- */
   loop(0.9, () => {
     if (!raceRunning) return;
-
     if (chance(0.25)) return;
 
     spawnTire();
