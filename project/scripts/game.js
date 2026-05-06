@@ -233,7 +233,7 @@ scene("race", () => {
   let carVelX = 0;
   let input = 0;
 
-  const accel = 40 + UPGRADES[0] * 4;
+  const accel = 40 + UPGRADES[0] * 2;
   const maxSpeed = 10 + UPGRADES[0] * 2;
   const grip = 0.88 + UPGRADES[1] * 0.015;
 
