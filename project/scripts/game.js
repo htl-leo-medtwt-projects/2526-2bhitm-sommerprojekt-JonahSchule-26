@@ -220,12 +220,12 @@ scene("race", () => {
      ASPHALT
   ------------------------- */
   add([
-  sprite("asphalt"),
-  pos(width() / 2, height() / 2),
-  anchor("center"),
-  scale(0.74, 1.3),
-  z(-10),
-]);
+    sprite("asphalt"),
+    pos(width() / 2, height() / 2),
+    anchor("center"),
+    scale(0.74, 1.3),
+    z(-10),
+  ]);
 
   /* -------------------------
      CAR PHYSICS
@@ -290,8 +290,8 @@ scene("race", () => {
   /* -------------------------
      INPUT
   ------------------------- */
-  onKeyDown("a", () => input = -1);
-  onKeyDown("d", () => input = 1);
+  onKeyDown("a", () => (input = -1));
+  onKeyDown("d", () => (input = 1));
 
   onKeyRelease("a", () => {
     if (!isKeyDown("d")) input = 0;
@@ -314,11 +314,7 @@ scene("race", () => {
 
     car.pos.x += carVelX * 60 * dt();
 
-    car.pos.x = clamp(
-      car.pos.x,
-      lanes[0] - 80,
-      lanes[2] + 80
-    );
+    car.pos.x = clamp(car.pos.x, lanes[0] - 80, lanes[2] + 80);
   });
 
   /* -------------------------
@@ -366,11 +362,7 @@ scene("race", () => {
   /* -------------------------
      UI
   ------------------------- */
-  const ui = add([
-    text("Lives: 3"),
-    pos(20, 20),
-    fixed(),
-  ]);
+  const ui = add([text("Lives: 3"), pos(20, 20), fixed()]);
 
   onUpdate(() => {
     ui.text = `Lives: ${lives}`;
