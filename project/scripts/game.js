@@ -164,6 +164,7 @@ loadSprite("player", "assets/img/sprite.jpg");
 loadSprite("tyre1", "assets/img/tyre.png");
 loadSprite("tyre2", "assets/img/tire-stack-1.jpeg.jpg");
 loadSprite("tyre3", "assets/img/tire-stack-2.jpeg");
+loadSprite("asphalt", "assets/img/asphalt.jpg");
 
 loadSprite("car", "assets/img/kart-sprite-img.png", {
   sliceX: 4,
@@ -208,30 +209,37 @@ scene("race", () => {
 
   lives = 3;
   raceRunning = true;
+  let spawningStopped = false;
 
   /* -------------------------
-     LANES (TIRES + POSITION)
+     LANES
   ------------------------- */
   const lanes = [width() * 0.3, width() * 0.5, width() * 0.7];
 
   /* -------------------------
-     CAR PHYSICS (NEW SYSTEM)
+     ASPHALT
+  ------------------------- */
+  add([
+  sprite("asphalt"),
+  pos(width() / 2, height() / 2),
+  anchor("center"),
+  scale(0.74, 1.3),
+  z(-10),
+]);
+
+  /* -------------------------
+     CAR PHYSICS
   ------------------------- */
   let carVelX = 0;
   let input = 0;
 
-  const accel = 90;
-
-  const maxSpeed = 8 + UPGRADES[0] * 1.5; 
-  // MOTOR -> schneller
-
-  const grip = 0.88 + UPGRADES[1] * 0.015; 
-  // GRIP -> weniger drift
+  const accel = 40 + UPGRADES[0] * 4;
+  const maxSpeed = 10 + UPGRADES[0] * 2;
+  const grip = 0.88 + UPGRADES[1] * 0.015;
 
   /* -------------------------
      TRACK VISUALS
   ------------------------- */
-
   function spawnLaneLine(x) {
     add([
       rect(12, 80),
@@ -294,7 +302,7 @@ scene("race", () => {
   });
 
   /* -------------------------
-     MOVEMENT (SMOOTH + GRIP)
+     MOVEMENT
   ------------------------- */
   onUpdate(() => {
     if (!raceRunning) return;
@@ -305,10 +313,16 @@ scene("race", () => {
     carVelX *= grip;
 
     car.pos.x += carVelX * 60 * dt();
+
+    car.pos.x = clamp(
+      car.pos.x,
+      lanes[0] - 80,
+      lanes[2] + 80
+    );
   });
 
   /* -------------------------
-     TIRES (UNCHANGED SYSTEM)
+     TIRES
   ------------------------- */
   const tires = ["tyre1", "tyre2", "tyre3"];
 
@@ -335,7 +349,7 @@ scene("race", () => {
   }
 
   loop(0.9, () => {
-    if (!raceRunning) return;
+    if (!raceRunning || spawningStopped) return;
     if (chance(0.25)) return;
 
     spawnTire();
@@ -350,10 +364,23 @@ scene("race", () => {
   });
 
   /* -------------------------
+     UI
+  ------------------------- */
+  const ui = add([
+    text("Lives: 3"),
+    pos(20, 20),
+    fixed(),
+  ]);
+
+  onUpdate(() => {
+    ui.text = `Lives: ${lives}`;
+  });
+
+  /* -------------------------
      FINISH
   ------------------------- */
   wait(30, () => {
-    raceRunning = false;
+    spawningStopped = true;
 
     const finishLine = add([
       rect(width(), 80),
@@ -376,7 +403,11 @@ scene("race", () => {
 
     finishLine.onUpdate(() => {
       if (finishLine.pos.y > height() + 120) {
-        wait(0.5, () => go("hub"));
+        raceRunning = false;
+
+        wait(0.5, () => {
+          go("hub");
+        });
       }
     });
   });

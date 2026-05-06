@@ -320,12 +320,14 @@ body {
     RACES
    ---------- */
 
-   #race {
+#race {
     display: none;
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
     width: 100vw;
     height: 100vh;
+    overflow: hidden;
     background: black;
-    z-index: 9999;
+    z-index: 99999;
 }
