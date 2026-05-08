@@ -52,9 +52,8 @@ function showHub() {
   let totalPower = UPGRADES[0] + UPGRADES[1] + UPGRADES[2];
   document.getElementById("power-text").innerHTML = `Power: ${totalPower}`;
 
-  raceSection.style.display = "block";
+  raceSection.style.display = "none";
   raceSection.style.pointerEvents = "none";
-  raceSection.style.zIndex = "0";
 }
 
 function showGarage() {
@@ -158,6 +157,7 @@ kaboom({
   width: window.innerWidth,
   height: window.innerHeight,
   root: raceSection,
+  crisp: true,
 });
 
 /* =========================================================
@@ -180,6 +180,7 @@ loadSprite("tyre1", "assets/img/tyre.png");
 loadSprite("tyre2", "assets/img/tire-stack-1.jpeg.jpg");
 loadSprite("tyre3", "assets/img/tire-stack-2.jpeg");
 loadSprite("asphalt", "assets/img/asphalt.jpg");
+loadSprite("grass", "assets/img/grass.jpg");
 
 loadSprite("car", "assets/img/kart-sprite-img.png", {
   sliceX: 4,
@@ -206,7 +207,7 @@ scene("hub", () => {
     pos(width() / 2, height() / 2),
     anchor("center"),
     anchor("center"),
-    scale(2),
+    scale(0.5),
   ]);
 
   player.play("walk");
@@ -221,6 +222,15 @@ let raceDuration = 30 - UPGRADES[2] * 2;
 scene("race", () => {
   raceDuration = 30 - UPGRADES[2] * 2;
   raceSection.style.display = "block";
+  raceSection.style.pointerEvents = "auto";
+
+  add([
+    sprite("grass"),
+    pos(width() / 2, height() / 2),
+    anchor("center"),
+    scale(3),
+    z(-100),
+  ]);
 
   setTimeout(() => {
     document.querySelector("canvas")?.focus();
@@ -229,6 +239,8 @@ scene("race", () => {
   lives = 3;
   raceRunning = true;
   let spawningStopped = false;
+  let lastLanes = [];
+  const maxMemory = 3;
 
   /* -------------------------
      LANES
@@ -347,8 +359,24 @@ scene("race", () => {
     tyre3: { scale: 0.1125, speed: 260 },
   };
 
+  function getSafeLane() {
+    let lane;
+
+    do {
+      lane = choose(lanes);
+    } while (lastLanes.includes(lane));
+
+    lastLanes.push(lane);
+
+    if (lastLanes.length > maxMemory) {
+      lastLanes.shift();
+    }
+
+    return lane;
+  }
+
   function spawnTire() {
-    const lane = choose(lanes);
+    const lane = getSafeLane();
     const type = choose(tires);
     const cfg = tireConfig[type];
 

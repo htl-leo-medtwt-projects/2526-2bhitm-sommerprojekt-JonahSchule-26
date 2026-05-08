@@ -12,6 +12,11 @@ body {
     HUB STYLES
 ----------------- */
 
+#hub {
+    position: relative;
+    z-index: 10;
+}
+
 #hub-image {
     width: 110vw;
     height: auto;
@@ -323,12 +328,12 @@ body {
 #race {
     display: none;
     position: fixed;
-    top: 0;
-    left: 0;
+    inset: 0;
     width: 100vw;
     height: 100vh;
-    overflow: hidden;
     z-index: 99999;
+    overflow: hidden;
     background-image: url(../assets/img/grass.jpg);
     background-size: cover;
+    pointer-events: auto;
 }
