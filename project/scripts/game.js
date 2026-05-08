@@ -50,10 +50,11 @@ function showHub() {
   SCREEN[1].forEach((el) => el && (el.style.display = "none"));
 
   let totalPower = UPGRADES[0] + UPGRADES[1] + UPGRADES[2];
-  document.getElementById('power-text').innerHTML = `Power: ${totalPower}`;
+  document.getElementById("power-text").innerHTML = `Power: ${totalPower}`;
 
-  raceSection.style.display = "none";
+  raceSection.style.display = "block";
   raceSection.style.pointerEvents = "none";
+  raceSection.style.zIndex = "0";
 }
 
 function showGarage() {
@@ -163,7 +164,18 @@ kaboom({
    SPRITES
 ========================================================= */
 
-loadSprite("player", "assets/img/sprite.jpg");
+loadSprite("player", "assets/img/sprite-without-background.png", {
+  sliceX: 7,
+  sliceY: 1,
+  anims: {
+    walk: {
+      from: 0,
+      to: 6,
+      loop: true,
+      speed: 8,
+    },
+  },
+});
 loadSprite("tyre1", "assets/img/tyre.png");
 loadSprite("tyre2", "assets/img/tire-stack-1.jpeg.jpg");
 loadSprite("tyre3", "assets/img/tire-stack-2.jpeg");
@@ -192,6 +204,7 @@ scene("hub", () => {
   const player = add([
     sprite("player"),
     pos(width() / 2, height() / 2),
+    anchor("center"),
     anchor("center"),
     scale(2),
   ]);
