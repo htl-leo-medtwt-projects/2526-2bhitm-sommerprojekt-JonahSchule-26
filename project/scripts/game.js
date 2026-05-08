@@ -49,6 +49,9 @@ function showHub() {
   SCREEN[0].forEach((el) => el && (el.style.display = "block"));
   SCREEN[1].forEach((el) => el && (el.style.display = "none"));
 
+  let totalPower = UPGRADES[0] + UPGRADES[1] + UPGRADES[2];
+  document.getElementById('power-text').innerHTML = `Power: ${totalPower}`;
+
   raceSection.style.display = "none";
   raceSection.style.pointerEvents = "none";
 }
@@ -200,7 +203,10 @@ scene("hub", () => {
    RACE SCENE
 ========================================================= */
 
+let raceDuration = 30 - UPGRADES[2] * 2;
+
 scene("race", () => {
+  raceDuration = 30 - UPGRADES[2] * 2;
   raceSection.style.display = "block";
 
   setTimeout(() => {
@@ -235,7 +241,7 @@ scene("race", () => {
 
   const accel = 40 + UPGRADES[0] * 2;
   const maxSpeed = 10 + UPGRADES[0] * 2;
-  const grip = 0.88 + UPGRADES[1] * 0.015;
+  const grip = 0.88 - UPGRADES[1] * 0.015;
 
   /* -------------------------
      TRACK VISUALS
@@ -371,7 +377,7 @@ scene("race", () => {
   /* -------------------------
      FINISH
   ------------------------- */
-  wait(30, () => {
+  wait(raceDuration, () => {
     spawningStopped = true;
 
     const finishLine = add([
