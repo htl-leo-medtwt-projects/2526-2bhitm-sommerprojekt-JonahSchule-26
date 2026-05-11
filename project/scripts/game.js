@@ -178,8 +178,7 @@ loadSprite("player", "assets/img/sprite-without-background.png", {
   },
 });
 loadSprite("tyre1", "assets/img/tyre.png");
-loadSprite("tyre2", "assets/img/tire-stack-1.jpeg.jpg");
-loadSprite("tyre3", "assets/img/tire-stack-2.jpeg");
+loadSprite("tyre2", "assets/img/tyre-2.png");
 loadSprite("asphalt", "assets/img/asphalt.jpg");
 loadSprite("grass", "assets/img/grass.jpg");
 
@@ -352,12 +351,11 @@ scene("race", () => {
   /* -------------------------
      TIRES
   ------------------------- */
-  const tires = ["tyre1", "tyre2", "tyre3"];
+  const tires = ["tyre1", "tyre2"];
 
   const tireConfig = {
     tyre1: { scale: 0.25, speed: 260 },
     tyre2: { scale: 0.225, speed: 260 },
-    tyre3: { scale: 0.1125, speed: 260 },
   };
 
   function getSafeLane() {
