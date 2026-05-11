@@ -240,7 +240,7 @@ scene("race", () => {
   raceRunning = true;
   let spawningStopped = false;
   let lastLanes = [];
-  const maxMemory = 3;
+  const maxMemory = 2;
 
   /* -------------------------
      LANES
