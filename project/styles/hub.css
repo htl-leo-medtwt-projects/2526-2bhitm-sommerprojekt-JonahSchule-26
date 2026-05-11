@@ -30,7 +30,7 @@ body {
 #lives,
 #garage-power {
     position: absolute;
-    z-index: 20;
+    z-index: 21;
 }
 
 #player-box {
@@ -70,7 +70,7 @@ body {
 }
 
 #goToGarage-button {
-    position: absolute;
+    position: fixed;
     bottom: 2.5%;
     left: 20px;
     font-size: xx-large;

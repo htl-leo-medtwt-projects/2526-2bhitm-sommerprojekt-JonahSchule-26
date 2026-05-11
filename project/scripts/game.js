@@ -183,13 +183,13 @@ loadSprite("tyre3", "assets/img/tire-stack-2.jpeg");
 loadSprite("asphalt", "assets/img/asphalt.jpg");
 loadSprite("grass", "assets/img/grass.jpg");
 
-loadSprite("car", "assets/img/kart-sprite-img.png", {
-  sliceX: 4,
-  sliceY: 4,
+loadSprite("car", "assets/img/car-without-background.png", {
+  sliceX: 1,
+  sliceY: 1,
   anims: {
     drive: {
       from: 0,
-      to: 3,
+      to: 0,
       loop: true,
       speed: 12,
     },
@@ -314,7 +314,7 @@ scene("race", () => {
     pos(lanes[1], height() - 140),
     area(),
     anchor("center"),
-    scale(0.6),
+    scale(1/2),
   ]);
 
   car.play("drive");
@@ -450,16 +450,6 @@ scene("race", () => {
         });
       }
     });
-  });
-});
-
-/* =========================================================
-   BUTTON EVENTS
-========================================================= */
-
-document.querySelectorAll(".enter-race").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    go("race");
   });
 });
 
