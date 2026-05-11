@@ -40,6 +40,23 @@ const raceSection = document.getElementById("race");
 const UPGRADES = [0, 0, 0];
 let lives = 3;
 let raceRunning = false;
+let currentRace = 1;
+const RACE_DIFFICULTIES = [
+  { duration: 20, obstacleSpeed: 180, spawnRate: 1.4 },
+  { duration: 22, obstacleSpeed: 190, spawnRate: 1.3 },
+  { duration: 24, obstacleSpeed: 200, spawnRate: 1.2 },
+  { duration: 26, obstacleSpeed: 220, spawnRate: 1.1 },
+  { duration: 28, obstacleSpeed: 240, spawnRate: 1.0 },
+  { duration: 30, obstacleSpeed: 260, spawnRate: 0.95 },
+  { duration: 32, obstacleSpeed: 280, spawnRate: 0.9 },
+  { duration: 34, obstacleSpeed: 300, spawnRate: 0.85 },
+  { duration: 36, obstacleSpeed: 320, spawnRate: 0.8 },
+  { duration: 38, obstacleSpeed: 340, spawnRate: 0.75 },
+  { duration: 40, obstacleSpeed: 360, spawnRate: 0.7 },
+  { duration: 42, obstacleSpeed: 380, spawnRate: 0.65 },
+  { duration: 44, obstacleSpeed: 400, spawnRate: 0.6 },
+  { duration: 46, obstacleSpeed: 430, spawnRate: 0.55 }
+];
 
 /* =========================================================
    SCREEN FUNCTIONS
@@ -216,7 +233,9 @@ scene("hub", () => {
    RACE SCENE
 ========================================================= */
 
-let raceDuration = 30 - UPGRADES[2] * 2;
+const raceData = RACE_DIFFICULTIES[currentRace - 1];
+
+raceDuration = raceData.duration - UPGRADES[2] * 1.5;
 
 scene("race", () => {
   raceDuration = 30 - UPGRADES[2] * 2;
@@ -265,7 +284,7 @@ scene("race", () => {
   let input = 0;
 
   const accel = 40 + UPGRADES[2] * 2;
-  const maxSpeed = 10 + UPGRADES[0] * 3;
+  const maxSpeed = 20 + UPGRADES[0] * 3;
   const grip = 0.88 - UPGRADES[1] * 0.015;
 
   /* -------------------------
@@ -354,8 +373,8 @@ scene("race", () => {
   const tires = ["tyre1", "tyre2"];
 
   const tireConfig = {
-    tyre1: { scale: 0.25, speed: 260 },
-    tyre2: { scale: 0.26, speed: 260 },
+    tyre1: { scale: 0.25, speed: raceData.obstacleSpeed },
+    tyre2: { scale: 0.26, speed: raceData.obstacleSpeed },
   };
 
   function getSafeLane() {
@@ -390,7 +409,7 @@ scene("race", () => {
     ]);
   }
 
-  loop(0.9, () => {
+  loop(raceData.spawnRate, () => {
     if (!raceRunning || spawningStopped) return;
     if (chance(0.25)) return;
 
@@ -454,6 +473,12 @@ scene("race", () => {
 /* =========================================================
    START
 ========================================================= */
+for (let i = 1; i <= 14; i++) {
+  document.getElementById(`race-button-${i}`).onclick = () => {
+    currentRace = i;
+    go("race");
+  };
+}
 
 go("hub");
 renderUpgradeBars();
