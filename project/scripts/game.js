@@ -264,8 +264,8 @@ scene("race", () => {
   let carVelX = 0;
   let input = 0;
 
-  const accel = 40 + UPGRADES[0] * 2;
-  const maxSpeed = 10 + UPGRADES[0] * 2;
+  const accel = 40 + UPGRADES[2] * 2;
+  const maxSpeed = 10 + UPGRADES[0] * 3;
   const grip = 0.88 - UPGRADES[1] * 0.015;
 
   /* -------------------------
@@ -355,7 +355,7 @@ scene("race", () => {
 
   const tireConfig = {
     tyre1: { scale: 0.25, speed: 260 },
-    tyre2: { scale: 0.225, speed: 260 },
+    tyre2: { scale: 0.26, speed: 260 },
   };
 
   function getSafeLane() {
