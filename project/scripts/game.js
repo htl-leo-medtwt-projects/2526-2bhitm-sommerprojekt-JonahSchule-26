@@ -52,8 +52,9 @@ function showHub() {
   let totalPower = UPGRADES[0] + UPGRADES[1] + UPGRADES[2];
   document.getElementById("power-text").innerHTML = `Power: ${totalPower}`;
 
-  raceSection.style.display = "none";
+  raceSection.style.display = "block";
   raceSection.style.pointerEvents = "none";
+  raceSection.style.zIndex = "5";
 }
 
 function showGarage() {
@@ -206,8 +207,7 @@ scene("hub", () => {
     sprite("player"),
     pos(width() / 2, height() / 2),
     anchor("center"),
-    anchor("center"),
-    scale(0.5),
+    scale(0.35),
   ]);
 
   player.play("walk");
@@ -223,6 +223,7 @@ scene("race", () => {
   raceDuration = 30 - UPGRADES[2] * 2;
   raceSection.style.display = "block";
   raceSection.style.pointerEvents = "auto";
+  raceSection.style.zIndex = "99999";
 
   add([
     sprite("grass"),

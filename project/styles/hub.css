@@ -21,7 +21,16 @@ body {
     width: 110vw;
     height: auto;
     position: absolute;
+    z-index: 1;
     transform: translateY(-12%);
+}
+
+.enter-race,
+#goToGarage-button,
+#lives,
+#garage-power {
+    position: absolute;
+    z-index: 20;
 }
 
 #player-box {
@@ -326,12 +335,12 @@ body {
    ---------- */
 
 #race {
-    display: none;
+    display: block;
     position: fixed;
     inset: 0;
     width: 100vw;
     height: 100vh;
-    z-index: 99999;
+    z-index: 5;
     overflow: hidden;
     background-image: url(../assets/img/grass.jpg);
     background-size: cover;
