@@ -312,14 +312,9 @@ scene("race", () => {
   let carVelX = 0;
   let input = 0;
 
-  // UPGRADES[0] → höhere Maximalgeschwindigkeit
-  // UPGRADES[1] → minimal schneller + deutlich weniger Sliding
-  const maxSpeed    = 40 + UPGRADES[0] * 5 + UPGRADES[1] * 1.5;
+  const maxSpeed    = 10 + UPGRADES[0] + UPGRADES[1];
 
-  // Slide-Koeffizient (pro normalisiertem Frame bei 60 fps):
-  //   UPGRADES[1]=0 → 0.94 (starkes Rutschen, ~1,5s bis Stillstand)
-  //   UPGRADES[1]=7 → 0.00 (sofortiger Stopp, kein Rutschen)
-  const slideBase   = 0.94;
+  const slideBase   = 0.85;
   const slideCoeff  = slideBase * (1 - UPGRADES[1] / 7);
 
   const car = add([
