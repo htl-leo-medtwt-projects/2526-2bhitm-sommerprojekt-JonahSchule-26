@@ -168,6 +168,78 @@ scene("race", () => {
     z(-10),
   ]);
 
+  /* ---------------------------------------------------------
+     LANE MARKINGS
+  --------------------------------------------------------- */
+
+  const MARK_SPEED = 260;
+
+  function addDashedLine(x) {
+    const dashH   = 50;
+    const gap     = 45;
+    const seg     = dashH + gap;
+    const count   = Math.ceil(height() / seg) + 3;
+
+    const dashes = [];
+    for (let i = 0; i < count; i++) {
+      const d = add([
+        rect(5, dashH),
+        pos(x, i * seg - seg),
+        color(255, 255, 255),
+        anchor("top"),
+        z(-4),
+      ]);
+      dashes.push(d);
+    }
+
+    onUpdate(() => {
+      if (!raceRunning) return;
+      dashes.forEach(d => {
+        d.pos.y += MARK_SPEED * dt();
+        if (d.pos.y > height() + dashH) {
+          d.pos.y -= count * seg;
+        }
+      });
+    });
+  }
+
+  function addBorderLine(x) {
+    const stripeH = 42;
+    const lineW   = 14;
+    const count   = Math.ceil(height() / stripeH) + 3;
+
+    const stripes = [];
+    for (let i = 0; i < count; i++) {
+      const isRed = i % 2 === 0;
+      const s = add([
+        rect(lineW, stripeH),
+        pos(x, i * stripeH - stripeH),
+        color(isRed ? 220 : 255, isRed ? 30 : 255, isRed ? 30 : 255),
+        anchor("top"),
+        z(-4),
+      ]);
+      stripes.push(s);
+    }
+
+    onUpdate(() => {
+      if (!raceRunning) return;
+      stripes.forEach(s => {
+        s.pos.y += MARK_SPEED * dt();
+        if (s.pos.y > height() + stripeH) {
+          s.pos.y -= count * stripeH;
+        }
+      });
+    });
+  }
+
+  addDashedLine(width() * 0.4);
+  addDashedLine(width() * 0.6);
+
+  addBorderLine(width() * 0.195);
+  addBorderLine(width() * 0.805);
+
+  /* ------------------------------------------------------- */
+
   setTimeout(() => {
     document.querySelector("canvas")?.focus();
   }, 50);
