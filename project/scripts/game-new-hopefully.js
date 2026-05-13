@@ -168,7 +168,7 @@ scene("hub", () => {
 ========================================================= */
 
 scene("race", () => {
-  const raceDuration = 30 + UPGRADES[2] * 2;
+  const raceDuration = 45 - UPGRADES[2] * 2.5;
 
   raceSection.style.display = "block";
   raceSection.style.pointerEvents = "auto";
@@ -194,8 +194,9 @@ scene("race", () => {
      LANE MARKINGS
   --------------------------------------------------------- */
 
-  const MARK_SPEED = 260;
+  const MARK_SPEED = 260; // same as obstacles → fühlt sich wie Straße an
 
+  // Gestrichelte weiße Linie zwischen zwei Spuren
   function addDashedLine(x) {
     const dashH   = 50;
     const gap     = 45;
@@ -205,7 +206,7 @@ scene("race", () => {
     const dashes = [];
     for (let i = 0; i < count; i++) {
       const d = add([
-        rect(5, dashH),
+        rect(10, dashH),
         pos(x, i * seg - seg),
         color(255, 255, 255),
         anchor("top"),
@@ -225,9 +226,10 @@ scene("race", () => {
     });
   }
 
+  // Durchgezogene, abwechselnd rot-weiße Randlinie
   function addBorderLine(x) {
     const stripeH = 42;
-    const lineW   = 14;
+    const lineW   = 22;
     const count   = Math.ceil(height() / stripeH) + 3;
 
     const stripes = [];
@@ -254,11 +256,13 @@ scene("race", () => {
     });
   }
 
+  // Gestrichelte Linien zwischen Spur 1–2 und Spur 2–3
   addDashedLine(width() * 0.4);
   addDashedLine(width() * 0.6);
 
+  // Rot-weiße Randlinien außen (links von Spur 1, rechts von Spur 3)
   addBorderLine(width() * 0.195);
-  addBorderLine(width() * 0.805);
+  addBorderLine(width() * 0.798);
 
   /* ------------------------------------------------------- */
 
@@ -308,9 +312,15 @@ scene("race", () => {
   let carVelX = 0;
   let input = 0;
 
-  const accel = 40;
-  const maxSpeed = 40 + UPGRADES[0] * 3;
-  const grip = 0.88 - UPGRADES[1] * 0.015;
+  // UPGRADES[0] → höhere Maximalgeschwindigkeit
+  // UPGRADES[1] → minimal schneller + deutlich weniger Sliding
+  const maxSpeed    = 40 + UPGRADES[0] * 5 + UPGRADES[1] * 1.5;
+
+  // Slide-Koeffizient (pro normalisiertem Frame bei 60 fps):
+  //   UPGRADES[1]=0 → 0.94 (starkes Rutschen, ~1,5s bis Stillstand)
+  //   UPGRADES[1]=7 → 0.00 (sofortiger Stopp, kein Rutschen)
+  const slideBase   = 0.94;
+  const slideCoeff  = slideBase * (1 - UPGRADES[1] / 7);
 
   const car = add([
     sprite("car"),
@@ -334,9 +344,18 @@ scene("race", () => {
   onUpdate(() => {
     if (!raceRunning) return;
 
-    carVelX += input * accel * dt();
-    carVelX = clamp(carVelX, -maxSpeed, maxSpeed);
-    carVelX *= grip;
+    if (input !== 0) {
+      // Sofort auf Maximalgeschwindigkeit in Fahrtrichtung setzen
+      carVelX = input * maxSpeed;
+    } else {
+      // Sliding: frameunabhängig über dt normalisiert
+      if (UPGRADES[1] >= 7) {
+        carVelX = 0;                                       // kein Rutschen
+      } else {
+        carVelX *= Math.pow(slideCoeff, dt() * 60);        // framerate-unabhängig
+        if (Math.abs(carVelX) < 0.5) carVelX = 0;
+      }
+    }
 
     car.pos.x += carVelX * 60 * dt();
 
@@ -408,5 +427,12 @@ scene("race", () => {
 /* =========================================================
    START
 ========================================================= */
+
+for (let i = 1; i <= 14; i++) {
+  document.getElementById(`race-button-${i}`).onclick = () => {
+    go("race");
+  };
+}
+
 go("hub");
 renderUpgradeBars();
