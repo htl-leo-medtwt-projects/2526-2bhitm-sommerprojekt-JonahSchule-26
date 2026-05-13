@@ -49,12 +49,8 @@ function showHub() {
   SCREEN[0].forEach((el) => el && (el.style.display = "block"));
   SCREEN[1].forEach((el) => el && (el.style.display = "none"));
 
-  let totalPower = UPGRADES[0] + UPGRADES[1] + UPGRADES[2];
-  document.getElementById("power-text").innerHTML = `Power: ${totalPower}`;
-
-  raceSection.style.display = "block";
+  raceSection.style.display = "none";
   raceSection.style.pointerEvents = "none";
-  raceSection.style.zIndex = "5";
 }
 
 function showGarage() {
@@ -158,37 +154,24 @@ kaboom({
   width: window.innerWidth,
   height: window.innerHeight,
   root: raceSection,
-  crisp: true,
 });
 
 /* =========================================================
    SPRITES
 ========================================================= */
 
-loadSprite("player", "assets/img/sprite-without-background.png", {
-  sliceX: 7,
-  sliceY: 1,
-  anims: {
-    walk: {
-      from: 0,
-      to: 6,
-      loop: true,
-      speed: 8,
-    },
-  },
-});
+loadSprite("player", "assets/img/sprite.jpg");
 loadSprite("tyre1", "assets/img/tyre.png");
-loadSprite("tyre2", "assets/img/tyre-2.png");
-loadSprite("asphalt", "assets/img/asphalt.jpg");
-loadSprite("grass", "assets/img/grass.jpg");
+loadSprite("tyre2", "assets/img/tire-stack-1.jpeg.jpg");
+loadSprite("tyre3", "assets/img/tire-stack-2.jpeg");
 
-loadSprite("car", "assets/img/car-without-background.png", {
-  sliceX: 1,
-  sliceY: 1,
+loadSprite("car", "assets/img/kart-sprite-img.png", {
+  sliceX: 4,
+  sliceY: 4,
   anims: {
     drive: {
       from: 0,
-      to: 0,
+      to: 3,
       loop: true,
       speed: 12,
     },
@@ -206,7 +189,7 @@ scene("hub", () => {
     sprite("player"),
     pos(width() / 2, height() / 2),
     anchor("center"),
-    scale(0.35),
+    scale(2),
   ]);
 
   player.play("walk");
@@ -216,21 +199,8 @@ scene("hub", () => {
    RACE SCENE
 ========================================================= */
 
-let raceDuration = 30 - UPGRADES[2] * 2;
-
 scene("race", () => {
-  raceDuration = 30 - UPGRADES[2] * 2;
   raceSection.style.display = "block";
-  raceSection.style.pointerEvents = "auto";
-  raceSection.style.zIndex = "99999";
-
-  add([
-    sprite("grass"),
-    pos(width() / 2, height() / 2),
-    anchor("center"),
-    scale(3),
-    z(-100),
-  ]);
 
   setTimeout(() => {
     document.querySelector("canvas")?.focus();
@@ -238,39 +208,30 @@ scene("race", () => {
 
   lives = 3;
   raceRunning = true;
-  let spawningStopped = false;
-  let lastLanes = [];
-  const maxMemory = 2;
 
   /* -------------------------
-     LANES
+     LANES (TIRES + POSITION)
   ------------------------- */
   const lanes = [width() * 0.3, width() * 0.5, width() * 0.7];
 
   /* -------------------------
-     ASPHALT
-  ------------------------- */
-  add([
-    sprite("asphalt"),
-    pos(width() / 2, height() / 2),
-    anchor("center"),
-    scale(0.74, 1.3),
-    z(-10),
-  ]);
-
-  /* -------------------------
-     CAR PHYSICS
+     CAR PHYSICS (NEW SYSTEM)
   ------------------------- */
   let carVelX = 0;
   let input = 0;
 
-  const accel = 40 + UPGRADES[0] * 2;
-  const maxSpeed = 10 + UPGRADES[0] * 2;
-  const grip = 0.88 - UPGRADES[1] * 0.015;
+  const accel = 90;
+
+  const maxSpeed = 8 + UPGRADES[0] * 1.5; 
+  // MOTOR -> schneller
+
+  const grip = 0.88 + UPGRADES[1] * 0.015; 
+  // GRIP -> weniger drift
 
   /* -------------------------
      TRACK VISUALS
   ------------------------- */
+
   function spawnLaneLine(x) {
     add([
       rect(12, 80),
@@ -313,7 +274,7 @@ scene("race", () => {
     pos(lanes[1], height() - 140),
     area(),
     anchor("center"),
-    scale(1/2),
+    scale(0.6),
   ]);
 
   car.play("drive");
@@ -321,8 +282,8 @@ scene("race", () => {
   /* -------------------------
      INPUT
   ------------------------- */
-  onKeyDown("a", () => (input = -1));
-  onKeyDown("d", () => (input = 1));
+  onKeyDown("a", () => input = -1);
+  onKeyDown("d", () => input = 1);
 
   onKeyRelease("a", () => {
     if (!isKeyDown("d")) input = 0;
@@ -333,7 +294,7 @@ scene("race", () => {
   });
 
   /* -------------------------
-     MOVEMENT
+     MOVEMENT (SMOOTH + GRIP)
   ------------------------- */
   onUpdate(() => {
     if (!raceRunning) return;
@@ -344,38 +305,21 @@ scene("race", () => {
     carVelX *= grip;
 
     car.pos.x += carVelX * 60 * dt();
-
-    car.pos.x = clamp(car.pos.x, lanes[0] - 80, lanes[2] + 80);
   });
 
   /* -------------------------
-     TIRES
+     TIRES (UNCHANGED SYSTEM)
   ------------------------- */
-  const tires = ["tyre1", "tyre2"];
+  const tires = ["tyre1", "tyre2", "tyre3"];
 
   const tireConfig = {
     tyre1: { scale: 0.25, speed: 260 },
     tyre2: { scale: 0.225, speed: 260 },
+    tyre3: { scale: 0.1125, speed: 260 },
   };
 
-  function getSafeLane() {
-    let lane;
-
-    do {
-      lane = choose(lanes);
-    } while (lastLanes.includes(lane));
-
-    lastLanes.push(lane);
-
-    if (lastLanes.length > maxMemory) {
-      lastLanes.shift();
-    }
-
-    return lane;
-  }
-
   function spawnTire() {
-    const lane = getSafeLane();
+    const lane = choose(lanes);
     const type = choose(tires);
     const cfg = tireConfig[type];
 
@@ -391,7 +335,7 @@ scene("race", () => {
   }
 
   loop(0.9, () => {
-    if (!raceRunning || spawningStopped) return;
+    if (!raceRunning) return;
     if (chance(0.25)) return;
 
     spawnTire();
@@ -406,19 +350,10 @@ scene("race", () => {
   });
 
   /* -------------------------
-     UI
-  ------------------------- */
-  const ui = add([text("Lives: 3"), pos(20, 20), fixed()]);
-
-  onUpdate(() => {
-    ui.text = `Lives: ${lives}`;
-  });
-
-  /* -------------------------
      FINISH
   ------------------------- */
-  wait(raceDuration, () => {
-    spawningStopped = true;
+  wait(30, () => {
+    raceRunning = false;
 
     const finishLine = add([
       rect(width(), 80),
@@ -441,13 +376,19 @@ scene("race", () => {
 
     finishLine.onUpdate(() => {
       if (finishLine.pos.y > height() + 120) {
-        raceRunning = false;
-
-        wait(0.5, () => {
-          go("hub");
-        });
+        wait(0.5, () => go("hub"));
       }
     });
+  });
+});
+
+/* =========================================================
+   BUTTON EVENTS
+========================================================= */
+
+document.querySelectorAll(".enter-race").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    go("race");
   });
 });
 
