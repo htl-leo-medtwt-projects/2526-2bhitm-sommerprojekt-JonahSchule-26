@@ -40,23 +40,6 @@ const raceSection = document.getElementById("race");
 const UPGRADES = [0, 0, 0];
 let lives = 3;
 let raceRunning = false;
-let currentRace = 1;
-const RACE_DIFFICULTIES = [
-  { duration: 20, obstacleSpeed: 180, spawnRate: 1.4 },
-  { duration: 22, obstacleSpeed: 190, spawnRate: 1.3 },
-  { duration: 24, obstacleSpeed: 200, spawnRate: 1.2 },
-  { duration: 26, obstacleSpeed: 220, spawnRate: 1.1 },
-  { duration: 28, obstacleSpeed: 240, spawnRate: 1.0 },
-  { duration: 30, obstacleSpeed: 260, spawnRate: 0.95 },
-  { duration: 32, obstacleSpeed: 280, spawnRate: 0.9 },
-  { duration: 34, obstacleSpeed: 300, spawnRate: 0.85 },
-  { duration: 36, obstacleSpeed: 320, spawnRate: 0.8 },
-  { duration: 38, obstacleSpeed: 340, spawnRate: 0.75 },
-  { duration: 40, obstacleSpeed: 360, spawnRate: 0.7 },
-  { duration: 42, obstacleSpeed: 380, spawnRate: 0.65 },
-  { duration: 44, obstacleSpeed: 400, spawnRate: 0.6 },
-  { duration: 46, obstacleSpeed: 430, spawnRate: 0.55 }
-];
 
 /* =========================================================
    SCREEN FUNCTIONS
@@ -76,29 +59,7 @@ function showHub() {
 
 function showGarage() {
   SCREEN[0].forEach((el) => el && (el.style.display = "none"));
-
-  for (let i = 0; i < SCREEN[1].length; i++) {
-    let element = SCREEN[1][i];
-    if (!element) continue;
-
-    if (i === 1) {
-      element.style.display = "grid";
-    } else if (i === 0) {
-      element.style.display = "block";
-    } else if (i === 3 || i === 5 || i === 7) {
-      element.style.display = "block";
-      element.style.position = "absolute";
-      element.style.bottom = "10px";
-      element.style.left = "50%";
-      element.style.transform = "translateX(-50%)";
-    } else if (i === 2 || i === 4 || i === 6) {
-      element.style.display = "block";
-      element.style.position = "relative";
-      element.style.paddingBottom = "60px";
-    } else {
-      element.style.display = "block";
-    }
-  }
+  SCREEN[1].forEach((el) => el && (el.style.display = "block"));
 
   raceSection.style.display = "none";
 }
@@ -139,31 +100,14 @@ function updateUpgradeBars() {
 
     for (let j = 0; j < 7; j++) {
       const span = document.createElement("span");
-
-      if (j < UPGRADES[i]) {
-        span.classList.add("active");
-      }
-
+      if (j < UPGRADES[i]) span.classList.add("active");
       bar.appendChild(span);
     }
   });
 }
 
 function renderUpgradeBars() {
-  const bars = ["motor-bar", "grip-bar", "transmission-bar"];
-
-  bars.forEach((id, i) => {
-    const bar = document.getElementById(id);
-    if (!bar) return;
-
-    bar.innerHTML = "";
-
-    for (let j = 0; j < 7; j++) {
-      const seg = document.createElement("span");
-      if (j < UPGRADES[i]) seg.classList.add("active");
-      bar.appendChild(seg);
-    }
-  });
+  updateUpgradeBars();
 }
 
 /* =========================================================
@@ -182,35 +126,12 @@ kaboom({
    SPRITES
 ========================================================= */
 
-loadSprite("player", "assets/img/sprite-without-background.png", {
-  sliceX: 7,
-  sliceY: 1,
-  anims: {
-    walk: {
-      from: 0,
-      to: 6,
-      loop: true,
-      speed: 8,
-    },
-  },
-});
 loadSprite("tyre1", "assets/img/tyre.png");
 loadSprite("tyre2", "assets/img/tyre-2.png");
 loadSprite("asphalt", "assets/img/asphalt.jpg");
 loadSprite("grass", "assets/img/grass.jpg");
 
-loadSprite("car", "assets/img/car-without-background.png", {
-  sliceX: 1,
-  sliceY: 1,
-  anims: {
-    drive: {
-      from: 0,
-      to: 0,
-      loop: true,
-      speed: 12,
-    },
-  },
-});
+loadSprite("car", "assets/img/car-without-background.png");
 
 /* =========================================================
    HUB SCENE
@@ -218,27 +139,15 @@ loadSprite("car", "assets/img/car-without-background.png", {
 
 scene("hub", () => {
   showHub();
-
-  const player = add([
-    sprite("player"),
-    pos(width() / 2, height() / 2),
-    anchor("center"),
-    scale(0.35),
-  ]);
-
-  player.play("walk");
 });
 
 /* =========================================================
    RACE SCENE
 ========================================================= */
 
-const raceData = RACE_DIFFICULTIES[currentRace - 1];
-
-raceDuration = raceData.duration - UPGRADES[2] * 1.5;
-
 scene("race", () => {
-  raceDuration = 30 - UPGRADES[2] * 2;
+  const raceDuration = 30 + UPGRADES[2] * 2;
+
   raceSection.style.display = "block";
   raceSection.style.pointerEvents = "auto";
   raceSection.style.zIndex = "99999";
@@ -251,24 +160,6 @@ scene("race", () => {
     z(-100),
   ]);
 
-  setTimeout(() => {
-    document.querySelector("canvas")?.focus();
-  }, 50);
-
-  lives = 3;
-  raceRunning = true;
-  let spawningStopped = false;
-  let lastLanes = [];
-  const maxMemory = 2;
-
-  /* -------------------------
-     LANES
-  ------------------------- */
-  const lanes = [width() * 0.3, width() * 0.5, width() * 0.7];
-
-  /* -------------------------
-     ASPHALT
-  ------------------------- */
   add([
     sprite("asphalt"),
     pos(width() / 2, height() / 2),
@@ -277,71 +168,66 @@ scene("race", () => {
     z(-10),
   ]);
 
-  /* -------------------------
-     CAR PHYSICS
-  ------------------------- */
+  setTimeout(() => {
+    document.querySelector("canvas")?.focus();
+  }, 50);
+
+  lives = 3;
+  raceRunning = true;
+  let spawningStopped = false;
+
+  const lanePositions = [
+    width() * 0.3,
+    width() * 0.5,
+    width() * 0.7
+  ];
+
+  let spawnHistory = [];
+
+  function getSafeLane() {
+    let lane;
+    let attempts = 0;
+
+    do {
+      lane = randi(0, 3);
+      attempts++;
+
+      if (attempts > 20) break;
+
+    } while (
+      spawnHistory.length >= 2 &&
+      (
+        (spawnHistory[0] === 0 && spawnHistory[1] === 1 && lane === 2) ||
+        (spawnHistory[0] === 2 && spawnHistory[1] === 1 && lane === 0)
+      )
+    );
+
+    spawnHistory.push(lane);
+
+    if (spawnHistory.length > 2) {
+      spawnHistory.shift();
+    }
+
+    return lane;
+  }
+
   let carVelX = 0;
   let input = 0;
 
-  const accel = 40 + UPGRADES[2] * 2;
-  const maxSpeed = 20 + UPGRADES[0] * 3;
+  const accel = 40;
+  const maxSpeed = 40 + UPGRADES[0] * 3;
   const grip = 0.88 - UPGRADES[1] * 0.015;
 
-  /* -------------------------
-     TRACK VISUALS
-  ------------------------- */
-  function spawnLaneLine(x) {
-    add([
-      rect(12, 80),
-      pos(x, -100),
-      color(255, 255, 255),
-      move(DOWN, 260),
-      anchor("center"),
-    ]);
-  }
-
-  function spawnBorderBlock(x, isRed) {
-    add([
-      rect(40, 100),
-      pos(x, -120),
-      color(...(isRed ? [255, 0, 0] : [255, 255, 255])),
-      move(DOWN, 260),
-      anchor("center"),
-    ]);
-  }
-
-  let borderToggle = true;
-
-  loop(0.35, () => {
-    if (!raceRunning) return;
-
-    spawnLaneLine(width() * 0.4);
-    spawnLaneLine(width() * 0.6);
-
-    spawnBorderBlock(lanes[0] - 150, borderToggle);
-    spawnBorderBlock(lanes[2] + 150, !borderToggle);
-
-    borderToggle = !borderToggle;
-  });
-
-  /* -------------------------
-     CAR
-  ------------------------- */
   const car = add([
     sprite("car"),
-    pos(lanes[1], height() - 140),
+    pos(lanePositions[1], height() - 140),
     area(),
     anchor("center"),
-    scale(1/2),
+    scale(0.5),
   ]);
 
-  car.play("drive");
-
-  /* -------------------------
-     INPUT
-  ------------------------- */
-  onKeyDown("a", () => (input = -1));
-  onKeyDown("d", () => (input = 1));
+  onKeyDown("a", () => input = -1);
+  onKeyDown("d", () => input = 1);
 
   onKeyRelease("a", () => {
     if (!isKeyDown("d")) input = 0;
@@ -351,91 +237,55 @@ scene("race", () => {
     if (!isKeyDown("a")) input = 0;
   });
 
-  /* -------------------------
-     MOVEMENT
-  ------------------------- */
   onUpdate(() => {
     if (!raceRunning) return;
 
     carVelX += input * accel * dt();
     carVelX = clamp(carVelX, -maxSpeed, maxSpeed);
-
     carVelX *= grip;
 
     car.pos.x += carVelX * 60 * dt();
 
-    car.pos.x = clamp(car.pos.x, lanes[0] - 80, lanes[2] + 80);
+    car.pos.x = clamp(
+      car.pos.x,
+      lanePositions[0] - 80,
+      lanePositions[2] + 80
+    );
   });
 
-  /* -------------------------
-     TIRES
-  ------------------------- */
   const tires = ["tyre1", "tyre2"];
-
-  const tireConfig = {
-    tyre1: { scale: 0.25, speed: raceData.obstacleSpeed },
-    tyre2: { scale: 0.26, speed: raceData.obstacleSpeed },
-  };
-
-  function getSafeLane() {
-    let lane;
-
-    do {
-      lane = choose(lanes);
-    } while (lastLanes.includes(lane));
-
-    lastLanes.push(lane);
-
-    if (lastLanes.length > maxMemory) {
-      lastLanes.shift();
-    }
-
-    return lane;
-  }
 
   function spawnTire() {
     const lane = getSafeLane();
-    const type = choose(tires);
-    const cfg = tireConfig[type];
 
     add([
-      sprite(type),
-      pos(lane, -120),
+      sprite(choose(tires)),
+      pos(lanePositions[lane], -120),
       area(),
       anchor("center"),
-      scale(cfg.scale),
-      move(DOWN, cfg.speed),
+      scale(0.25),
+      move(DOWN, 260),
       "obstacle",
     ]);
   }
 
-  loop(raceData.spawnRate, () => {
+  loop(0.9, () => {
     if (!raceRunning || spawningStopped) return;
     if (chance(0.25)) return;
-
     spawnTire();
   });
 
-  /* -------------------------
-     COLLISION
-  ------------------------- */
   car.onCollide("obstacle", (o) => {
     destroy(o);
     shake(6);
   });
 
-  /* -------------------------
-     UI
-  ------------------------- */
   const ui = add([text("Lives: 3"), pos(20, 20), fixed()]);
 
   onUpdate(() => {
     ui.text = `Lives: ${lives}`;
   });
 
-  /* -------------------------
-     FINISH
-  ------------------------- */
   wait(raceDuration, () => {
     spawningStopped = true;
 
@@ -447,15 +297,6 @@ scene("race", () => {
       move(DOWN, 260),
       area(),
       outline(6),
-    ]);
-
-    add([
-      text("FINISH", { size: 64 }),
-      pos(width() / 2, -60),
-      anchor("center"),
-      fixed(),
-      move(DOWN, 260),
-      color(0, 0, 0),
     ]);
 
     finishLine.onUpdate(() => {
@@ -473,9 +314,9 @@ scene("race", () => {
 /* =========================================================
    START
 ========================================================= */
+
 for (let i = 1; i <= 14; i++) {
   document.getElementById(`race-button-${i}`).onclick = () => {
-    currentRace = i;
     go("race");
   };
 }
