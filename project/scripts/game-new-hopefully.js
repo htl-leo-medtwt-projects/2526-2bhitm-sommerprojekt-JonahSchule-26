@@ -423,11 +423,5 @@ scene("race", () => {
    START
 ========================================================= */
 
-for (let i = 1; i <= 14; i++) {
-  document.getElementById(`race-button-${i}`).onclick = () => {
-    go("race");
-  };
-}
-
 go("hub");
 renderUpgradeBars();
