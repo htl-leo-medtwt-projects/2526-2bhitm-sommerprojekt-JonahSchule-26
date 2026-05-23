@@ -194,7 +194,7 @@ scene("race", () => {
      LANE MARKINGS
   --------------------------------------------------------- */
 
-  const MARK_SPEED = 260; // same as obstacles → fühlt sich wie Straße an
+  const MARK_SPEED = 260;
 
   // Gestrichelte weiße Linie zwischen zwei Spuren
   function addDashedLine(x) {
