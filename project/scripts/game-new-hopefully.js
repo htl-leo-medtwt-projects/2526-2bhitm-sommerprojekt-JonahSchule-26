@@ -314,7 +314,7 @@ scene("race", () => {
 
   const maxSpeed    = 10 + UPGRADES[0] + UPGRADES[1];
 
-  const slideBase   = 0.85;
+  const slideBase   = 0.95;
   const slideCoeff  = slideBase * (1 - UPGRADES[1] / 7);
 
   const car = add([
