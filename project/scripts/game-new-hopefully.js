@@ -41,6 +41,165 @@ const UPGRADES = [0, 0, 0];
 let lives = 3;
 let raceRunning = false;
 
+// --- Spieler & Timer ---
+let playerName      = "";
+let raceWins        = new Array(14).fill(false);
+let currentRaceIdx  = -1;
+let timerStartTime  = null;
+let timerInterval   = null;
+let timerEl         = null;
+
+/* =========================================================
+   TIMER & NAME HELPERS
+========================================================= */
+
+function formatTime(sec) {
+  const m  = Math.floor(sec / 60);
+  const s  = Math.floor(sec % 60);
+  const ms = Math.floor((sec % 1) * 100);
+  return `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}.${String(ms).padStart(2,"0")}`;
+}
+
+function createTimerDisplay() {
+  timerEl = document.createElement("div");
+  timerEl.id = "global-timer";
+  timerEl.style.cssText = `
+    position: fixed; top: 14px; right: 20px;
+    background: rgba(0,0,0,0.65); color: #fff;
+    font-family: monospace; font-size: 20px;
+    padding: 6px 14px; border-radius: 8px;
+    z-index: 100000; pointer-events: none;
+    letter-spacing: 1px;
+  `;
+  timerEl.textContent = "00:00.00";
+  document.body.appendChild(timerEl);
+}
+
+function startTimer() {
+  timerStartTime = Date.now();
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    if (!timerEl) return;
+    const elapsed = (Date.now() - timerStartTime) / 1000;
+    timerEl.textContent = formatTime(elapsed);
+  }, 50);
+}
+
+function stopTimer() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+}
+
+function checkAllRacesWon() {
+  if (!raceWins.every(Boolean)) return;
+
+  stopTimer();
+  const elapsed = (Date.now() - timerStartTime) / 1000;
+  if (timerEl) timerEl.textContent = formatTime(elapsed);
+
+  // In localStorage speichern
+  const records = JSON.parse(localStorage.getItem("raceRecords") || "[]");
+  records.push({ name: playerName, time: elapsed, date: new Date().toLocaleDateString("de-AT") });
+  records.sort((a, b) => a.time - b.time);
+  localStorage.setItem("raceRecords", JSON.stringify(records));
+
+  showCompletionScreen(elapsed, records);
+}
+
+function showCompletionScreen(elapsed, records) {
+  const overlay = document.createElement("div");
+  overlay.style.cssText = `
+    position: fixed; inset: 0; z-index: 9999999;
+    background: rgba(0,0,0,0.88);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    color: #fff; font-family: sans-serif; text-align: center;
+    gap: 12px;
+  `;
+
+  const top3 = records.slice(0, 3).map((r, i) => {
+    const medal = ["🥇","🥈","🥉"][i];
+    return `<tr>
+      <td style="padding:4px 16px">${medal}</td>
+      <td style="padding:4px 16px">${r.name}</td>
+      <td style="padding:4px 16px;font-family:monospace">${formatTime(r.time)}</td>
+      <td style="padding:4px 16px;font-size:13px;opacity:.7">${r.date}</td>
+    </tr>`;
+  }).join("");
+
+  overlay.innerHTML = `
+    <div style="font-size:52px">🏁</div>
+    <h1 style="margin:0;font-size:32px">Alle 14 Rennen gewonnen!</h1>
+    <p style="margin:0;font-size:20px;opacity:.8">
+      ${playerName} – Gesamtzeit: <strong style="font-family:monospace">${formatTime(elapsed)}</strong>
+    </p>
+    <table style="margin-top:16px;border-collapse:collapse;font-size:17px">
+      <thead><tr style="opacity:.5;font-size:13px">
+        <th></th><th>Name</th><th>Zeit</th><th>Datum</th>
+      </tr></thead>
+      <tbody>${top3}</tbody>
+    </table>
+    <button id="completion-close" style="
+      margin-top:24px; padding:12px 32px; font-size:18px;
+      border-radius:8px; border:none; background:#e53935;
+      color:#fff; cursor:pointer; font-weight:bold;
+    ">Nochmal spielen</button>
+  `;
+  document.body.appendChild(overlay);
+
+  document.getElementById("completion-close").onclick = () => {
+    overlay.remove();
+    raceWins.fill(false);
+    timerStartTime = null;
+    if (timerEl) timerEl.textContent = "00:00.00";
+    startTimer();
+    go("hub");
+  };
+}
+
+function createNameScreen() {
+  const overlay = document.createElement("div");
+  overlay.id = "name-screen";
+  overlay.style.cssText = `
+    position: fixed; inset: 0; z-index: 9999999;
+    background: #111;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    color: #fff; font-family: sans-serif; gap: 16px;
+  `;
+  overlay.innerHTML = `
+    <div style="font-size:56px">🏎️</div>
+    <h1 style="margin:0;font-size:34px;letter-spacing:1px">Racing Game</h1>
+    <p style="margin:0;opacity:.7">Gib deinen Namen ein, bevor das Rennen startet:</p>
+    <input id="name-input" type="text" maxlength="20" placeholder="Dein Name…"
+      style="padding:12px 18px;font-size:20px;border-radius:8px;
+             border:2px solid #555;background:#222;color:#fff;
+             outline:none;width:260px;text-align:center;">
+    <button id="name-confirm" style="
+      padding:12px 36px;font-size:20px;border-radius:8px;
+      border:none;background:#e53935;color:#fff;
+      cursor:pointer;font-weight:bold;letter-spacing:.5px;
+    ">Los geht's!</button>
+  `;
+  document.body.appendChild(overlay);
+
+  const confirm = () => {
+    const val = document.getElementById("name-input").value.trim();
+    playerName = val || "Unbekannt";
+    overlay.remove();
+    startTimer();
+    go("hub");
+  };
+
+  document.getElementById("name-confirm").onclick = confirm;
+  document.getElementById("name-input").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") confirm();
+  });
+
+  // Fokus direkt ins Feld
+  setTimeout(() => document.getElementById("name-input")?.focus(), 100);
+}
+
 /* =========================================================
    SCREEN FUNCTIONS
 ========================================================= */
@@ -194,7 +353,7 @@ scene("race", () => {
      LANE MARKINGS
   --------------------------------------------------------- */
 
-  const MARK_SPEED = 260;
+  const MARK_SPEED = 260; // same as obstacles → fühlt sich wie Straße an
 
   // Gestrichelte weiße Linie zwischen zwei Spuren
   function addDashedLine(x) {
@@ -312,9 +471,14 @@ scene("race", () => {
   let carVelX = 0;
   let input = 0;
 
-  const maxSpeed    = 10 + UPGRADES[0] + UPGRADES[1];
+  // UPGRADES[0] → höhere Maximalgeschwindigkeit
+  // UPGRADES[1] → minimal schneller + deutlich weniger Sliding
+  const maxSpeed    = 40 + UPGRADES[0] * 5 + UPGRADES[1] * 1.5;
 
-  const slideBase   = 0.95;
+  // Slide-Koeffizient (pro normalisiertem Frame bei 60 fps):
+  //   UPGRADES[1]=0 → 0.94 (starkes Rutschen, ~1,5s bis Stillstand)
+  //   UPGRADES[1]=7 → 0.00 (sofortiger Stopp, kein Rutschen)
+  const slideBase   = 0.94;
   const slideCoeff  = slideBase * (1 - UPGRADES[1] / 7);
 
   const car = add([
@@ -412,6 +576,14 @@ scene("race", () => {
         raceRunning = false;
 
         wait(0.5, () => {
+          // Rennen als gewonnen markieren
+          if (currentRaceIdx >= 0) {
+            raceWins[currentRaceIdx] = true;
+            // Button visuell abhaken
+            const btn = document.getElementById(`race-button-${currentRaceIdx + 1}`);
+            if (btn) btn.style.opacity = "0.45";
+          }
+          checkAllRacesWon();
           go("hub");
         });
       }
@@ -423,5 +595,13 @@ scene("race", () => {
    START
 ========================================================= */
 
-go("hub");
+for (let i = 1; i <= 14; i++) {
+  document.getElementById(`race-button-${i}`).onclick = () => {
+    currentRaceIdx = i - 1;
+    go("race");
+  };
+}
+
+createTimerDisplay();
+createNameScreen();
 renderUpgradeBars();
