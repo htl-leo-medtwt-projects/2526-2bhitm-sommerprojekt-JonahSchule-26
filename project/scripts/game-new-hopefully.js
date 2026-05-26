@@ -63,14 +63,6 @@ function formatTime(sec) {
 function createTimerDisplay() {
   timerEl = document.createElement("div");
   timerEl.id = "global-timer";
-  timerEl.style.cssText = `
-    position: fixed; top: 14px; right: 20px;
-    background: rgba(0,0,0,0.65); color: #fff;
-    font-family: monospace; font-size: 20px;
-    padding: 6px 14px; border-radius: 8px;
-    z-index: 100000; pointer-events: none;
-    letter-spacing: 1px;
-  `;
   timerEl.textContent = "00:00.00";
   document.body.appendChild(timerEl);
 }
@@ -108,46 +100,38 @@ function checkAllRacesWon() {
 
 function showCompletionScreen(elapsed, records) {
   const overlay = document.createElement("div");
-  overlay.style.cssText = `
-    position: fixed; inset: 0; z-index: 9999999;
-    background: rgba(0,0,0,0.88);
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    color: #fff; font-family: sans-serif; text-align: center;
-    gap: 12px;
-  `;
+  overlay.className = "completion-overlay";
 
   const top3 = records.slice(0, 3).map((r, i) => {
-    const medal = ["🥇","🥈","🥉"][i];
-    return `<tr>
-      <td style="padding:4px 16px">${medal}</td>
-      <td style="padding:4px 16px">${r.name}</td>
-      <td style="padding:4px 16px;font-family:monospace">${formatTime(r.time)}</td>
-      <td style="padding:4px 16px;font-size:13px;opacity:.7">${r.date}</td>
-    </tr>`;
+    const medal = ["🥇", "🥈", "🥉"][i];
+    return `
+      <tr>
+        <td>${medal}</td>
+        <td>${r.name}</td>
+        <td>${formatTime(r.time)}</td>
+        <td>${r.date}</td>
+      </tr>
+    `;
   }).join("");
 
   overlay.innerHTML = `
-    <div style="font-size:52px">🏁</div>
-    <h1 style="margin:0;font-size:32px">Alle 14 Rennen gewonnen!</h1>
-    <p style="margin:0;font-size:20px;opacity:.8">
-      ${playerName} – Gesamtzeit: <strong style="font-family:monospace">${formatTime(elapsed)}</strong>
-    </p>
-    <table style="margin-top:16px;border-collapse:collapse;font-size:17px">
-      <thead><tr style="opacity:.5;font-size:13px">
-        <th></th><th>Name</th><th>Zeit</th><th>Datum</th>
-      </tr></thead>
+    <div class="completion-icon">🏁</div>
+    <h1>Alle 14 Rennen gewonnen!</h1>
+    <p>${playerName} – Gesamtzeit: <strong>${formatTime(elapsed)}</strong></p>
+    <table>
+      <thead>
+        <tr>
+          <th></th><th>Name</th><th>Zeit</th><th>Datum</th>
+        </tr>
+      </thead>
       <tbody>${top3}</tbody>
     </table>
-    <button id="completion-close" style="
-      margin-top:24px; padding:12px 32px; font-size:18px;
-      border-radius:8px; border:none; background:#e53935;
-      color:#fff; cursor:pointer; font-weight:bold;
-    ">Nochmal spielen</button>
+    <button class="completion-close-btn">Nochmal spielen</button>
   `;
+
   document.body.appendChild(overlay);
 
-  document.getElementById("completion-close").onclick = () => {
+  document.querySelector(".completion-close-btn").onclick = () => {
     overlay.remove();
     raceWins.fill(false);
     timerStartTime = null;
@@ -160,26 +144,14 @@ function showCompletionScreen(elapsed, records) {
 function createNameScreen() {
   const overlay = document.createElement("div");
   overlay.id = "name-screen";
-  overlay.style.cssText = `
-    position: fixed; inset: 0; z-index: 9999999;
-    background: #111;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    color: #fff; font-family: sans-serif; gap: 16px;
-  `;
+  overlay.className = "name-screen";
+
   overlay.innerHTML = `
-    <div style="font-size:56px">🏎️</div>
-    <h1 style="margin:0;font-size:34px;letter-spacing:1px">Racing Game</h1>
-    <p style="margin:0;opacity:.7">Gib deinen Namen ein, bevor das Rennen startet:</p>
-    <input id="name-input" type="text" maxlength="20" placeholder="Dein Name…"
-      style="padding:12px 18px;font-size:20px;border-radius:8px;
-             border:2px solid #555;background:#222;color:#fff;
-             outline:none;width:260px;text-align:center;">
-    <button id="name-confirm" style="
-      padding:12px 36px;font-size:20px;border-radius:8px;
-      border:none;background:#e53935;color:#fff;
-      cursor:pointer;font-weight:bold;letter-spacing:.5px;
-    ">Los geht's!</button>
+    <div class="name-icon">🏎️</div>
+    <h1 class="name-title">Racing Game</h1>
+    <p class="name-subtitle">Gib deinen Namen ein, bevor das Rennen startet:</p>
+    <input id="name-input" class="name-input" type="text" maxlength="20" placeholder="Dein Name…">
+    <button id="name-confirm" class="name-confirm-btn">Los geht's!</button>
   `;
   document.body.appendChild(overlay);
 
@@ -196,7 +168,6 @@ function createNameScreen() {
     if (e.key === "Enter") confirm();
   });
 
-  // Fokus direkt ins Feld
   setTimeout(() => document.getElementById("name-input")?.focus(), 100);
 }
 

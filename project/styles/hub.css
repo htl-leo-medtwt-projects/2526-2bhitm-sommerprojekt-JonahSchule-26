@@ -346,3 +346,180 @@ body {
     background-size: cover;
     pointer-events: auto;
 }
+
+
+
+
+/* ----------
+    TIMER
+---------- */
+#global-timer {
+  position: fixed;
+  top: 14px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  font-family: monospace;
+  font-size: 20px;
+  padding: 6px 14px;
+  border-radius: 8px;
+  z-index: 100000;
+  pointer-events: none;
+  letter-spacing: 1px;
+}
+
+
+/* -----------------------
+    COMPLETION OVERLAY
+----------------------- */
+
+/* Overlay */
+.completion-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999999;
+  background: rgba(0, 0, 0, 0.88);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-family: sans-serif;
+  text-align: center;
+  gap: 12px;
+}
+
+/* Emoji/Icon */
+.completion-overlay .completion-icon {
+  font-size: 52px;
+}
+
+/* Überschrift */
+.completion-overlay h1 {
+  margin: 0;
+  font-size: 32px;
+}
+
+/* Beschreibungstext */
+.completion-overlay p {
+  margin: 0;
+  font-size: 20px;
+  opacity: 0.8;
+}
+
+/* Gesamtzeit strong */
+.completion-overlay p strong {
+  font-family: monospace;
+}
+
+/* Tabelle */
+.completion-overlay table {
+  margin-top: 16px;
+  border-collapse: collapse;
+  font-size: 17px;
+}
+
+/* Tabellenkopf */
+.completion-overlay thead tr {
+  opacity: 0.5;
+  font-size: 13px;
+}
+
+/* Tabellenzellen */
+.completion-overlay td,
+.completion-overlay th {
+  padding: 4px 16px;
+}
+
+/* Zeit-Zellen in der Tabelle */
+.completion-overlay td:nth-child(3) {
+  font-family: monospace;
+}
+
+/* Datum-Zellen */
+.completion-overlay td:nth-child(4) {
+  font-size: 13px;
+  opacity: 0.7;
+}
+
+/* Button */
+.completion-overlay .completion-close-btn {
+  margin-top: 24px;
+  padding: 12px 32px;
+  font-size: 18px;
+  border-radius: 8px;
+  border: none;
+  background: #e53935;
+  color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* Button Hover (optional) */
+.completion-overlay .completion-close-btn:hover {
+  background: #c62828;
+}
+
+
+
+/* ----------------
+    NAME SCREEN
+---------------- */
+
+/* Name Screen Overlay */
+.name-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999999;
+  background: #111;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-family: sans-serif;
+  gap: 16px;
+}
+
+.name-icon {
+  font-size: 56px;
+}
+
+.name-title {
+  margin: 0;
+  font-size: 34px;
+  letter-spacing: 1px;
+}
+
+.name-subtitle {
+  margin: 0;
+  opacity: 0.7;
+}
+
+.name-input {
+  padding: 12px 18px;
+  font-size: 20px;
+  border-radius: 8px;
+  border: 2px solid #555;
+  background: #222;
+  color: #fff;
+  outline: none;
+  width: 260px;
+  text-align: center;
+}
+
+.name-confirm-btn {
+  padding: 12px 36px;
+  font-size: 20px;
+  border-radius: 8px;
+  border: none;
+  background: #e53935;
+  color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+.name-confirm-btn:hover {
+  background: #c62828;
+}
