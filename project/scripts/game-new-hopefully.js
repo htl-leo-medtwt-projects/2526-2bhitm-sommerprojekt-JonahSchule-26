@@ -311,7 +311,6 @@ loadSprite("tyre1", "assets/img/tyre.png");
 loadSprite("tyre2", "assets/img/tyre-2.png");
 loadSprite("asphalt", "assets/img/asphalt.jpg");
 loadSprite("grass", "assets/img/grass.jpg");
-
 loadSprite("car", "assets/img/car-without-background.png");
 
 /* =========================================================
