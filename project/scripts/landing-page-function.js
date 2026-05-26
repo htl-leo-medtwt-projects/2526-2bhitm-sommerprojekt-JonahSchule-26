@@ -134,6 +134,17 @@ function showExitScreen() {
 
 function showLeaderboardScreen() {
   showScreen(3);
+  
+  const records = JSON.parse(localStorage.getItem("raceRecords") || "[]");
+  records.sort((a, b) => a.time - b.time);
+  
+  const first = records[0] || null;
+  const second = records[1] || null;
+  const third = records[2] || null;
+  
+  document.getElementById("first-place").innerHTML = first ? `${first.name}<br>${formatTime(first.time)}<br>${first.date}` : "—";
+  document.getElementById("second-place").innerHTML = second ? `${second.name}<br>${formatTime(second.time)}<br>${second.date}` : "—";
+  document.getElementById("third-place").innerHTML = third ? `${third.name}<br>${formatTime(third.time)}<br>${third.date}` : "—";
 }
 
 function showTutorialScreen() {
@@ -353,6 +364,15 @@ showTutorialScreen = function() {
     originalShowTutorialScreen();
     setTimeout(showClickHint, 500);
 };
+
+
+/* LEADERBOARD FUNKTIONEN */
+function formatTime(seconds) {
+  const mins = Math.floor(seconds / 60);
+  const secs = (seconds % 60).toFixed(2);
+  return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(5, '0')}`;
+}
+
 
 /* ON LOAD / EXIT GAME FUNCTIONS */
 window.onload = function () {
