@@ -50,7 +50,7 @@ body {
     color: white;
     font-size: 18px;
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
-    background: linear-gradient(90deg,rgba(157, 0, 255, 1) 0%, rgba(58, 0, 168, 1) 100%);
+    background: linear-gradient(90deg, rgba(157, 0, 255, 1) 0%, rgba(58, 0, 168, 1) 100%);
     padding: 5px 10px;
     border-radius: 5px;
     display: flex;
@@ -74,7 +74,7 @@ body {
     bottom: 2.5%;
     left: 20px;
     font-size: xx-large;
-    background: linear-gradient(90deg,rgba(0, 91, 255, 1) 0%, rgba(0, 194, 255, 1) 100%);
+    background: linear-gradient(90deg, rgba(0, 91, 255, 1) 0%, rgba(0, 194, 255, 1) 100%);
     border-radius: 0.5rem;
     border: none;
     font-size: xx-large;
@@ -106,7 +106,7 @@ body {
     position: absolute;
     top: 20px;
     right: 5%;
-    background: linear-gradient(90deg,rgba(250, 217, 97, 1) 0%, rgba(247, 107, 28, 1) 100%);
+    background: linear-gradient(90deg, rgba(250, 217, 97, 1) 0%, rgba(247, 107, 28, 1) 100%);
     padding-left: 20px;
     padding-right: 20px;
     padding-top: 10px;
@@ -203,24 +203,24 @@ body {
 /* -----------------
  BACK BUTTON STYLES
 ----------------- */
-.back-button > button {
+.back-button>button {
     position: absolute;
     bottom: 20px;
     right: 5%;
     font-size: xx-large;
-    background: linear-gradient(90deg,rgba(255, 0, 0, 1) 0%, rgba(255, 86, 86, 1) 50%, rgba(255, 0, 0, 1) 100%);
+    background: linear-gradient(90deg, rgba(255, 0, 0, 1) 0%, rgba(255, 86, 86, 1) 50%, rgba(255, 0, 0, 1) 100%);
     border-radius: 0.5rem;
     border: none;
     transition: background 0.3s, transform 0.1s;
 }
 
-.back-button > button:hover {
-    background: linear-gradient(90deg,rgba(255, 86, 86, 1) 0%, rgba(255, 0, 0, 1) 50%, rgba(255, 86, 86, 1) 100%);
+.back-button>button:hover {
+    background: linear-gradient(90deg, rgba(255, 86, 86, 1) 0%, rgba(255, 0, 0, 1) 50%, rgba(255, 86, 86, 1) 100%);
     cursor: pointer;
 }
 
-.back-button > button:active {
-    background: linear-gradient(90deg,rgba(255, 0, 0, 1) 0%, rgba(255, 86, 86, 1) 50%, rgba(255, 0, 0, 1) 100%);
+.back-button>button:active {
+    background: linear-gradient(90deg, rgba(255, 0, 0, 1) 0%, rgba(255, 86, 86, 1) 50%, rgba(255, 0, 0, 1) 100%);
     transform: translateY(2px);
 }
 
@@ -233,7 +233,7 @@ body {
 
 .enter-race {
     font-size: large;
-    background: linear-gradient(90deg,rgba(0, 91, 255, 1) 0%, rgba(0, 194, 255, 1) 100%);
+    background: linear-gradient(90deg, rgba(0, 91, 255, 1) 0%, rgba(0, 194, 255, 1) 100%);
     border-radius: 0.5rem;
     border: none;
     padding-left: 10px;
@@ -354,18 +354,18 @@ body {
     TIMER
 ---------- */
 #global-timer {
-  position: fixed;
-  top: 14px;
-  right: 20px;
-  background: rgba(0, 0, 0, 0.65);
-  color: #fff;
-  font-family: monospace;
-  font-size: 20px;
-  padding: 6px 14px;
-  border-radius: 8px;
-  z-index: 100000;
-  pointer-events: none;
-  letter-spacing: 1px;
+    position: fixed;
+    bottom: 14px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.65);
+    color: #fff;
+    font-family: monospace;
+    font-size: 20px;
+    padding: 6px 14px;
+    border-radius: 8px;
+    z-index: 100000;
+    pointer-events: none;
+    letter-spacing: 1px;
 }
 
 
@@ -375,89 +375,89 @@ body {
 
 /* Overlay */
 .completion-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 9999999;
-  background: rgba(0, 0, 0, 0.88);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-family: sans-serif;
-  text-align: center;
-  gap: 12px;
+    position: fixed;
+    inset: 0;
+    z-index: 9999999;
+    background: rgba(0, 0, 0, 0.88);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-family: sans-serif;
+    text-align: center;
+    gap: 12px;
 }
 
 /* Emoji/Icon */
 .completion-overlay .completion-icon {
-  font-size: 52px;
+    font-size: 52px;
 }
 
 /* Überschrift */
 .completion-overlay h1 {
-  margin: 0;
-  font-size: 32px;
+    margin: 0;
+    font-size: 32px;
 }
 
 /* Beschreibungstext */
 .completion-overlay p {
-  margin: 0;
-  font-size: 20px;
-  opacity: 0.8;
+    margin: 0;
+    font-size: 20px;
+    opacity: 0.8;
 }
 
 /* Gesamtzeit strong */
 .completion-overlay p strong {
-  font-family: monospace;
+    font-family: monospace;
 }
 
 /* Tabelle */
 .completion-overlay table {
-  margin-top: 16px;
-  border-collapse: collapse;
-  font-size: 17px;
+    margin-top: 16px;
+    border-collapse: collapse;
+    font-size: 17px;
 }
 
 /* Tabellenkopf */
 .completion-overlay thead tr {
-  opacity: 0.5;
-  font-size: 13px;
+    opacity: 0.5;
+    font-size: 13px;
 }
 
 /* Tabellenzellen */
 .completion-overlay td,
 .completion-overlay th {
-  padding: 4px 16px;
+    padding: 4px 16px;
 }
 
 /* Zeit-Zellen in der Tabelle */
 .completion-overlay td:nth-child(3) {
-  font-family: monospace;
+    font-family: monospace;
 }
 
 /* Datum-Zellen */
 .completion-overlay td:nth-child(4) {
-  font-size: 13px;
-  opacity: 0.7;
+    font-size: 13px;
+    opacity: 0.7;
 }
 
 /* Button */
 .completion-overlay .completion-close-btn {
-  margin-top: 24px;
-  padding: 12px 32px;
-  font-size: 18px;
-  border-radius: 8px;
-  border: none;
-  background: #e53935;
-  color: #fff;
-  cursor: pointer;
-  font-weight: bold;
+    margin-top: 24px;
+    padding: 12px 32px;
+    font-size: 18px;
+    border-radius: 8px;
+    border: none;
+    background: #e53935;
+    color: #fff;
+    cursor: pointer;
+    font-weight: bold;
 }
 
 /* Button Hover (optional) */
 .completion-overlay .completion-close-btn:hover {
-  background: #c62828;
+    background: #c62828;
 }
 
 
@@ -468,58 +468,58 @@ body {
 
 /* Name Screen Overlay */
 .name-screen {
-  position: fixed;
-  inset: 0;
-  z-index: 9999999;
-  background: #111;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-family: sans-serif;
-  gap: 16px;
+    position: fixed;
+    inset: 0;
+    z-index: 9999999;
+    background: #111;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-family: sans-serif;
+    gap: 16px;
 }
 
 .name-icon {
-  font-size: 56px;
+    font-size: 56px;
 }
 
 .name-title {
-  margin: 0;
-  font-size: 34px;
-  letter-spacing: 1px;
+    margin: 0;
+    font-size: 34px;
+    letter-spacing: 1px;
 }
 
 .name-subtitle {
-  margin: 0;
-  opacity: 0.7;
+    margin: 0;
+    opacity: 0.7;
 }
 
 .name-input {
-  padding: 12px 18px;
-  font-size: 20px;
-  border-radius: 8px;
-  border: 2px solid #555;
-  background: #222;
-  color: #fff;
-  outline: none;
-  width: 260px;
-  text-align: center;
+    padding: 12px 18px;
+    font-size: 20px;
+    border-radius: 8px;
+    border: 2px solid #555;
+    background: #222;
+    color: #fff;
+    outline: none;
+    width: 260px;
+    text-align: center;
 }
 
 .name-confirm-btn {
-  padding: 12px 36px;
-  font-size: 20px;
-  border-radius: 8px;
-  border: none;
-  background: #e53935;
-  color: #fff;
-  cursor: pointer;
-  font-weight: bold;
-  letter-spacing: 0.5px;
+    padding: 12px 36px;
+    font-size: 20px;
+    border-radius: 8px;
+    border: none;
+    background: #e53935;
+    color: #fff;
+    cursor: pointer;
+    font-weight: bold;
+    letter-spacing: 0.5px;
 }
 
 .name-confirm-btn:hover {
-  background: #c62828;
+    background: #c62828;
 }

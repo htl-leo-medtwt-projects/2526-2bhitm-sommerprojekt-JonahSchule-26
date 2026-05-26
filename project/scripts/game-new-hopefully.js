@@ -42,22 +42,22 @@ let lives = 3;
 let raceRunning = false;
 
 // --- Spieler & Timer ---
-let playerName      = "";
-let raceWins        = new Array(14).fill(false);
-let currentRaceIdx  = -1;
-let timerStartTime  = null;
-let timerInterval   = null;
-let timerEl         = null;
+let playerName = "";
+let raceWins = new Array(14).fill(false);
+let currentRaceIdx = -1;
+let timerStartTime = null;
+let timerInterval = null;
+let timerEl = null;
 
 /* =========================================================
    TIMER & NAME HELPERS
 ========================================================= */
 
 function formatTime(sec) {
-  const m  = Math.floor(sec / 60);
-  const s  = Math.floor(sec % 60);
+  const m = Math.floor(sec / 60);
+  const s = Math.floor(sec % 60);
   const ms = Math.floor((sec % 1) * 100);
-  return `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}.${String(ms).padStart(2,"0")}`;
+  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}.${String(ms).padStart(2, "0")}`;
 }
 
 function createTimerDisplay() {
@@ -91,7 +91,11 @@ function checkAllRacesWon() {
 
   // In localStorage speichern
   const records = JSON.parse(localStorage.getItem("raceRecords") || "[]");
-  records.push({ name: playerName, time: elapsed, date: new Date().toLocaleDateString("de-AT") });
+  records.push({
+    name: playerName,
+    time: elapsed,
+    date: new Date().toLocaleDateString("de-AT"),
+  });
   records.sort((a, b) => a.time - b.time);
   localStorage.setItem("raceRecords", JSON.stringify(records));
 
@@ -102,9 +106,11 @@ function showCompletionScreen(elapsed, records) {
   const overlay = document.createElement("div");
   overlay.className = "completion-overlay";
 
-  const top3 = records.slice(0, 3).map((r, i) => {
-    const medal = ["🥇", "🥈", "🥉"][i];
-    return `
+  const top3 = records
+    .slice(0, 3)
+    .map((r, i) => {
+      const medal = ["🥇", "🥈", "🥉"][i];
+      return `
       <tr>
         <td>${medal}</td>
         <td>${r.name}</td>
@@ -112,7 +118,8 @@ function showCompletionScreen(elapsed, records) {
         <td>${r.date}</td>
       </tr>
     `;
-  }).join("");
+    })
+    .join("");
 
   overlay.innerHTML = `
     <div class="completion-icon">🏁</div>
@@ -327,10 +334,10 @@ scene("race", () => {
 
   // Gestrichelte weiße Linie zwischen zwei Spuren
   function addDashedLine(x) {
-    const dashH   = 50;
-    const gap     = 45;
-    const seg     = dashH + gap;
-    const count   = Math.ceil(height() / seg) + 3;
+    const dashH = 50;
+    const gap = 45;
+    const seg = dashH + gap;
+    const count = Math.ceil(height() / seg) + 3;
 
     const dashes = [];
     for (let i = 0; i < count; i++) {
@@ -346,7 +353,7 @@ scene("race", () => {
 
     onUpdate(() => {
       if (!raceRunning) return;
-      dashes.forEach(d => {
+      dashes.forEach((d) => {
         d.pos.y += MARK_SPEED * dt();
         if (d.pos.y > height() + dashH) {
           d.pos.y -= count * seg;
@@ -358,8 +365,8 @@ scene("race", () => {
   // Durchgezogene, abwechselnd rot-weiße Randlinie
   function addBorderLine(x) {
     const stripeH = 42;
-    const lineW   = 22;
-    const count   = Math.ceil(height() / stripeH) + 3;
+    const lineW = 22;
+    const count = Math.ceil(height() / stripeH) + 3;
 
     const stripes = [];
     for (let i = 0; i < count; i++) {
@@ -376,7 +383,7 @@ scene("race", () => {
 
     onUpdate(() => {
       if (!raceRunning) return;
-      stripes.forEach(s => {
+      stripes.forEach((s) => {
         s.pos.y += MARK_SPEED * dt();
         if (s.pos.y > height() + stripeH) {
           s.pos.y -= count * stripeH;
@@ -403,11 +410,7 @@ scene("race", () => {
   raceRunning = true;
   let spawningStopped = false;
 
-  const lanePositions = [
-    width() * 0.3,
-    width() * 0.5,
-    width() * 0.7
-  ];
+  const lanePositions = [width() * 0.3, width() * 0.5, width() * 0.7];
 
   let spawnHistory = [];
 
@@ -420,13 +423,10 @@ scene("race", () => {
       attempts++;
 
       if (attempts > 20) break;
-
     } while (
       spawnHistory.length >= 2 &&
-      (
-        (spawnHistory[0] === 0 && spawnHistory[1] === 1 && lane === 2) ||
-        (spawnHistory[0] === 2 && spawnHistory[1] === 1 && lane === 0)
-      )
+      ((spawnHistory[0] === 0 && spawnHistory[1] === 1 && lane === 2) ||
+        (spawnHistory[0] === 2 && spawnHistory[1] === 1 && lane === 0))
     );
 
     spawnHistory.push(lane);
@@ -441,10 +441,10 @@ scene("race", () => {
   let carVelX = 0;
   let input = 0;
 
-  const maxSpeed    = 10 + UPGRADES[0] + UPGRADES[1];
+  const maxSpeed = 10 + UPGRADES[0] + UPGRADES[1];
 
-  const slideBase   = 0.95;
-  const slideCoeff  = slideBase * (1 - UPGRADES[1] / 7);
+  const slideBase = 0.95;
+  const slideCoeff = slideBase * (1 - UPGRADES[1] / 7);
 
   const car = add([
     sprite("car"),
@@ -454,8 +454,8 @@ scene("race", () => {
     scale(0.5),
   ]);
 
-  onKeyDown("a", () => input = -1);
-  onKeyDown("d", () => input = 1);
+  onKeyDown("a", () => (input = -1));
+  onKeyDown("d", () => (input = 1));
 
   onKeyRelease("a", () => {
     if (!isKeyDown("d")) input = 0;
@@ -474,20 +474,16 @@ scene("race", () => {
     } else {
       // Sliding: frameunabhängig über dt normalisiert
       if (UPGRADES[1] >= 7) {
-        carVelX = 0;                                       // kein Rutschen
+        carVelX = 0; // kein Rutschen
       } else {
-        carVelX *= Math.pow(slideCoeff, dt() * 60);        // framerate-unabhängig
+        carVelX *= Math.pow(slideCoeff, dt() * 60); // framerate-unabhängig
         if (Math.abs(carVelX) < 0.5) carVelX = 0;
       }
     }
 
     car.pos.x += carVelX * 60 * dt();
 
-    car.pos.x = clamp(
-      car.pos.x,
-      lanePositions[0] - 80,
-      lanePositions[2] + 80
-    );
+    car.pos.x = clamp(car.pos.x, lanePositions[0] - 80, lanePositions[2] + 80);
   });
 
   const tires = ["tyre1", "tyre2"];
