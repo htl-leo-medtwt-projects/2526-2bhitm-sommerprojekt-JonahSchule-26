@@ -353,7 +353,7 @@ scene("race", () => {
      LANE MARKINGS
   --------------------------------------------------------- */
 
-  const MARK_SPEED = 260; // same as obstacles → fühlt sich wie Straße an
+  const MARK_SPEED = 260;
 
   // Gestrichelte weiße Linie zwischen zwei Spuren
   function addDashedLine(x) {
@@ -471,14 +471,9 @@ scene("race", () => {
   let carVelX = 0;
   let input = 0;
 
-  // UPGRADES[0] → höhere Maximalgeschwindigkeit
-  // UPGRADES[1] → minimal schneller + deutlich weniger Sliding
-  const maxSpeed    = 40 + UPGRADES[0] * 5 + UPGRADES[1] * 1.5;
+  const maxSpeed    = 10 + UPGRADES[0] + UPGRADES[1];
 
-  // Slide-Koeffizient (pro normalisiertem Frame bei 60 fps):
-  //   UPGRADES[1]=0 → 0.94 (starkes Rutschen, ~1,5s bis Stillstand)
-  //   UPGRADES[1]=7 → 0.00 (sofortiger Stopp, kein Rutschen)
-  const slideBase   = 0.94;
+  const slideBase   = 0.95;
   const slideCoeff  = slideBase * (1 - UPGRADES[1] / 7);
 
   const car = add([
@@ -576,14 +571,6 @@ scene("race", () => {
         raceRunning = false;
 
         wait(0.5, () => {
-          // Rennen als gewonnen markieren
-          if (currentRaceIdx >= 0) {
-            raceWins[currentRaceIdx] = true;
-            // Button visuell abhaken
-            const btn = document.getElementById(`race-button-${currentRaceIdx + 1}`);
-            if (btn) btn.style.opacity = "0.45";
-          }
-          checkAllRacesWon();
           go("hub");
         });
       }
