@@ -461,14 +461,14 @@ a {
 }
 
 #second-place {
-    top: 49%;
-    left: 30%;
+    top: 46%;
+    left: 29%;
     transform: translate(-50%, -50%);
 }
 
 #third-place {
-    top: 54%;
-    left: 71%;
+    top: 50%;
+    left: 72%;
     transform: translate(-50%, -50%);
 }
 
@@ -485,4 +485,9 @@ a {
     transition: all 0.3s ease;
     background: linear-gradient(to left, rgb(227, 0, 0), rgb(184, 0, 0));
     color: white;
+}
+
+#back-button-leaderboard:hover {
+    transform: translateX(-50%) scale(1.05);
+    filter: brightness(1.1);
 }
