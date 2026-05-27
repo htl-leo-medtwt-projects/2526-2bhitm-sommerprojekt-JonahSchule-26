@@ -57,6 +57,8 @@ const defaultOptions = {
     option2: 'de'
 };
 
+
+/* DIESE TEXTE SIND NOCH KI GENERIERTE PLATZHALTER, DIE SPÄTER DURCH EIGENE INHALTE ERSETZT WERDEN SOLLEN */
 const tutorialDialogs = [
     {
         title: "🏁 Welcome to Kart and Key!",
