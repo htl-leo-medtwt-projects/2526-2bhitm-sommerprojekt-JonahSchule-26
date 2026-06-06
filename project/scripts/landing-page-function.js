@@ -58,7 +58,7 @@ const defaultOptions = {
 };
 
 
-/* DIESE TEXTE SIND NOCH KI GENERIERTE PLATZHALTER, DIE SPÄTER DURCH EIGENE INHALTE ERSETZT WERDEN */
+/* DIESE TEXTE SIND NICHT MEHR KI GENERIERTE PLATZHALTER, SONDERN DIE FERTIGEN TUTORIAL DIALOG TEXTE */
 const tutorialDialogs = [
     {
         title: "🏁 Welcome to Kart and Key!",
@@ -66,23 +66,23 @@ const tutorialDialogs = [
     },
     {
         title: "🎮 How to Play",
-        text: "Use the ARROW KEYS to control your kart. Press UP to accelerate, LEFT/RIGHT to steer."
+        text: "Use 'A' to steer left and 'D' to steer right."
     },
     {
-        title: "⭐ Collect Power-Ups",
-        text: "Drive over glowing items to get speed boosts, shields, and special abilities!"
+        title: "⭐ Collect Coins",
+        text: "Drive over glowing coins to collect them. Coins can be used to upgrade your kart and unlock new tracks!"
     },
     {
         title: "🏆 Win the Race",
-        text: "Reach the finish line before your opponents to unlock new karts and tracks."
+        text: "Reach the finish line before the timer runs out."
     },
     {
         title: "⚙️ Options",
-        text: "You can adjust music volume, SFX volume, and game difficulty in the Options menu."
+        text: "You can adjust music volume, SFX volume, and language in the Options menu."
     },
     {
         title: "📊 Leaderboard",
-        text: "Compete with friends and try to get the best time on the global leaderboard!"
+        text: "Compete with friends and try to get the best time on the global leaderboard! Leaderboard only shows the top 3 records."
     },
     {
         title: "🚀 Ready to Race?",
