@@ -70,7 +70,7 @@ const tutorialDialogs = [
     },
     {
         title: "⭐ Collect Coins",
-        text: "Drive over glowing coins to collect them. Coins can be used to upgrade your kart and unlock new tracks!"
+        text: "Drive over coins to collect them. Coins can be used to upgrade your kart and unlock new tracks!"
     },
     {
         title: "🏆 Win the Race",
