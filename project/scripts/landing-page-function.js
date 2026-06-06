@@ -74,7 +74,7 @@ const tutorialDialogs = [
     },
     {
         title: "🏆 Win the Race",
-        text: "Reach the finish line before the timer runs out."
+        text: "Reach the finish line before you drive into 5 obstacles to win the race!"
     },
     {
         title: "⚙️ Options",
