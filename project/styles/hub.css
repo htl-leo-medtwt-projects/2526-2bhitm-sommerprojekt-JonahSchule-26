@@ -49,7 +49,7 @@ body {
     top: 20px;
     left: 20px;
     color: white;
-    font-size: 18px;
+    font-size: x-large;
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
     background: linear-gradient(90deg, rgba(157, 0, 255, 1) 0%, rgba(58, 0, 168, 1) 100%);
     padding: 5px 10px;
@@ -78,7 +78,7 @@ body {
     background: linear-gradient(90deg, rgba(0, 91, 255, 1) 0%, rgba(0, 194, 255, 1) 100%);
     border-radius: 0.5rem;
     border: none;
-    font-size: xx-large;
+    font-size: x-large;
     padding-left: 20px;
     padding-right: 20px;
     padding-top: 10px;
@@ -106,7 +106,7 @@ body {
 #garage-power {
     position: absolute;
     top: 20px;
-    right: 5%;
+    right: 20px;
     background: linear-gradient(90deg, rgba(250, 217, 97, 1) 0%, rgba(247, 107, 28, 1) 100%);
     padding-left: 20px;
     padding-right: 20px;
@@ -540,5 +540,5 @@ body {
     padding-top: 10px;
     padding-bottom: 10px;
     font-size: x-large;
-    
+    font-weight: bold;
 }
