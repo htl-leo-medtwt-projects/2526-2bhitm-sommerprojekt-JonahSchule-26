@@ -40,6 +40,7 @@ const raceSection = document.getElementById("race");
 const UPGRADES = [0, 0, 0];
 let lives = 3;
 let raceRunning = false;
+let coins = 0;
 
 /* =========================================================
    SCREEN FUNCTIONS
@@ -91,22 +92,25 @@ function showGarage() {
 ========================================================= */
 
 function upgradeMotor() {
-  if (UPGRADES[0] < 7) {
+  if(coins > 1 && UPGRADES[0] < 7) {
     UPGRADES[0]++;
+    coins -= 1;
     updateUpgradeBars();
   }
 }
 
 function upgradeGrip() {
-  if (UPGRADES[1] < 7) {
+  if(coins > 1 && UPGRADES[1] < 7) {
     UPGRADES[1]++;
+    coins -= 1;
     updateUpgradeBars();
   }
 }
 
 function upgradeTransmission() {
-  if (UPGRADES[2] < 7) {
+  if(coins > 1 && UPGRADES[2] < 7) {
     UPGRADES[2]++;
+    coins -= 1;
     updateUpgradeBars();
   }
 }
@@ -398,6 +402,7 @@ scene("race", () => {
         raceRunning = false;
 
         wait(0.5, () => {
+          coins++;
           go("hub");
         });
       }
