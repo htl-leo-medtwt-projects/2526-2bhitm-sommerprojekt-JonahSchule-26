@@ -40,7 +40,6 @@ const raceSection = document.getElementById("race");
 const UPGRADES = [0, 0, 0];
 let lives = 3;
 let raceRunning = false;
-let coins = 0;
 
 /* =========================================================
    SCREEN FUNCTIONS
@@ -134,6 +133,18 @@ function updateUpgradeBars() {
 
 function renderUpgradeBars() {
   updateUpgradeBars();
+}
+
+
+/* =========================================================
+    COINS DISPLAY
+========================================================= */
+
+function updateCoinsDisplay() {
+  let coinsAmount = document.getElementById("coins-amount");
+  if (coinsAmount) {
+    coinsAmount.innerHTML = `Coins: ${coins}`;
+  }
 }
 
 /* =========================================================
@@ -403,6 +414,7 @@ scene("race", () => {
 
         wait(0.5, () => {
           coins++;
+          updateCoinsDisplay();
           go("hub");
         });
       }

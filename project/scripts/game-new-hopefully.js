@@ -227,23 +227,28 @@ function showGarage() {
    UPGRADE FUNCTIONS
 ========================================================= */
 
+let coins = 0;
+
 function upgradeMotor() {
-  if (UPGRADES[0] < 7) {
+  if(coins > 1 && UPGRADES[0] < 7) {
     UPGRADES[0]++;
+    coins -= 1;
     updateUpgradeBars();
   }
 }
 
 function upgradeGrip() {
-  if (UPGRADES[1] < 7) {
+  if(coins > 1 && UPGRADES[1] < 7) {
     UPGRADES[1]++;
+    coins -= 1;
     updateUpgradeBars();
   }
 }
 
 function upgradeTransmission() {
-  if (UPGRADES[2] < 7) {
+  if(coins > 1 && UPGRADES[2] < 7) {
     UPGRADES[2]++;
+    coins -= 1;
     updateUpgradeBars();
   }
 }
@@ -267,6 +272,18 @@ function updateUpgradeBars() {
 
 function renderUpgradeBars() {
   updateUpgradeBars();
+}
+
+
+/* =========================================================
+    COINS DISPLAY
+========================================================= */
+
+function updateCoinsDisplay() {
+  let coinsAmount = document.getElementById("coins-amount");
+  if (coinsAmount) {
+    coinsAmount.innerHTML = `Coins: ${coins}`;
+  }
 }
 
 /* =========================================================
@@ -297,6 +314,7 @@ loadSprite("car", "assets/img/car-without-background.png");
 
 scene("hub", () => {
   showHub();
+  updateCoinsDisplay();
 });
 
 /* =========================================================
@@ -537,6 +555,7 @@ scene("race", () => {
         raceRunning = false;
 
         wait(0.5, () => {
+          coins++;
           go("hub");
         });
       }
