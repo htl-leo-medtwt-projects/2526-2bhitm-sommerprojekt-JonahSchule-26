@@ -69,8 +69,8 @@ const tutorialDialogs = [
         text: "Use 'A' to steer left and 'D' to steer right."
     },
     {
-        title: "⭐ Collect Coins",
-        text: "Drive over coins to collect them. Coins can be used to upgrade your kart and unlock new tracks!"
+        title: "Finish Races to collect Coins",
+        text: "If you finish a race, you will receive a coin. This coin can be spent in the garage to upgrade your car. But be careful: You don't have enough coins to upgrade everything, so choose wisely!"
     },
     {
         title: "🏆 Win the Race",
