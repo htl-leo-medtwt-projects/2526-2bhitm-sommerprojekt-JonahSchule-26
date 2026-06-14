@@ -99,7 +99,7 @@ function playSfx(soundFile) {
 ========================================================= */
 
 function playCrashSound() {
-    playSfx('crash.mp3');
+    playSfx('crash.wav');
 }
 
 function playFinishSound() {
@@ -111,7 +111,7 @@ function playCoinSound() {
 }
 
 function playUpgradeSound() {
-    playSfx('upgrade.mp3');
+    playSfx('upgrade.wav');
 }
 
 function playButtonClickSound() {
