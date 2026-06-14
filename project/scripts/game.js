@@ -340,7 +340,7 @@ scene("race", () => {
     sprite("asphalt"),
     pos(width() / 2, height() / 2),
     anchor("center"),
-    scale(0.74, 1.3),
+    scale(0.65, 1.3),
     z(-10),
   ]);
 
@@ -567,12 +567,6 @@ scene("race", () => {
    START
 ========================================================= */
 
-for (let i = 1; i <= 14; i++) {
-  document.getElementById(`race-button-${i}`).onclick = () => {
-    currentRaceIdx = i - 1;
-    go("race");
-  };
-}
 
 createTimerDisplay();
 createNameScreen();
