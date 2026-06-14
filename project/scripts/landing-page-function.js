@@ -60,8 +60,6 @@ const STORAGE_KEYS = {
     SFX_VOLUME: 'game_sfx_volume'
 };
 
-
-/* DIESE TEXTE SIND NICHT MEHR KI GENERIERTE PLATZHALTER, SONDERN DIE FERTIGEN TUTORIAL DIALOG TEXTE */
 const tutorialDialogs = [
     {
         title: "🏁 Welcome to Kart and Key!",
@@ -98,7 +96,8 @@ let tutorialStep = 0;
 let tutorialActive = false;
 let originalShowTutorialScreen = showTutorialScreen;
 
-/* SICHERHEITSFUNKTIONEN */
+let backgroundMusic = null;
+
 function hideAllScreens() {
   SCREEN.forEach((screen) => {
     if (screen[0] && screen[0].forEach) {
@@ -123,7 +122,6 @@ function showScreen(index) {
   }
 }
 
-// Spezifische Screen-Funktionen
 function showStartScreen() {
   showScreen(0);
 }
@@ -156,11 +154,27 @@ function showTutorialScreen() {
   showScreen(4);
 }
 
-/* OPTIONEN LADEN UND SPEICHERN - localStorage INTEGRATION */
+function initBackgroundMusic() {
+    backgroundMusic = new Audio('assets/music/background-music.mp3');
+    backgroundMusic.loop = true;
+    backgroundMusic.volume = currentOptions.musicVolume / 100;
+}
+
+function startBackgroundMusic() {
+    if (backgroundMusic && !backgroundMusic.paused) return;
+    if (!backgroundMusic) initBackgroundMusic();
+    backgroundMusic.play().catch(() => {});
+}
+
+function setMusicVolume(volume) {
+    if (backgroundMusic) {
+        backgroundMusic.volume = volume / 100;
+    }
+}
+
 function saveOptionsToLocalStorage() {
     localStorage.setItem(STORAGE_KEYS.MUSIC_VOLUME, currentOptions.musicVolume);
     localStorage.setItem(STORAGE_KEYS.SFX_VOLUME, currentOptions.sfxVolume);
-    console.log("Options saved to localStorage:", currentOptions);
 }
 
 function loadOptionsFromLocalStorage() {
@@ -174,7 +188,6 @@ function loadOptionsFromLocalStorage() {
 }
 
 function loadCurrentOptions() {
-    // Lade aus localStorage statt aus defaultOptions
     currentOptions = loadOptionsFromLocalStorage();
     
     let musicSlider = document.getElementById('music-volume');
@@ -186,6 +199,8 @@ function loadCurrentOptions() {
     if (sfxSlider) sfxSlider.value = currentOptions.sfxVolume;
     if (musicValue) musicValue.innerHTML = currentOptions.musicVolume + '%';
     if (sfxValue) sfxValue.innerHTML = currentOptions.sfxVolume + '%';
+    
+    setMusicVolume(currentOptions.musicVolume);
 }
 
 function setupVolumeSliders() {
@@ -197,16 +212,13 @@ function setupVolumeSliders() {
     if (musicSlider) {
         musicSlider.addEventListener('input', function() {
             musicValue.innerHTML = this.value + '%';
-            // Echtzeit-Vorschau (optional)
-            updatePreviewVolume('music', parseInt(this.value));
+            setMusicVolume(parseInt(this.value));
         });
     }
     
     if (sfxSlider) {
         sfxSlider.addEventListener('input', function() {
             sfxValue.innerHTML = this.value + '%';
-            // Echtzeit-Vorschau (optional)
-            updatePreviewVolume('sfx', parseInt(this.value));
         });
     }
 }
@@ -214,21 +226,23 @@ function setupVolumeSliders() {
 function resetOptions() {
     currentOptions = { ...defaultOptions };
     
-    // Update UI
     let musicSlider = document.getElementById('music-volume');
     let sfxSlider = document.getElementById('sfx-volume');
     let musicValue = document.getElementById('music-value');
     let sfxValue = document.getElementById('sfx-value');
     
-    if (musicSlider) musicSlider.value = defaultOptions.musicVolume;
-    if (sfxSlider) sfxSlider.value = defaultOptions.sfxVolume;
-    if (musicValue) musicValue.textContent = defaultOptions.musicVolume + '%';
-    if (sfxValue) sfxValue.textContent = defaultOptions.sfxVolume + '%';
+    if (musicSlider) {
+        musicSlider.value = defaultOptions.musicVolume;
+        if (musicValue) musicValue.textContent = defaultOptions.musicVolume + '%';
+        setMusicVolume(defaultOptions.musicVolume);
+    }
     
-    // Zurücksetzen in localStorage
+    if (sfxSlider) {
+        sfxSlider.value = defaultOptions.sfxVolume;
+        if (sfxValue) sfxValue.textContent = defaultOptions.sfxVolume + '%';
+    }
+    
     saveOptionsToLocalStorage();
-    
-    console.log("Options reset to default");
 }
 
 function applyOptions() {
@@ -241,15 +255,11 @@ function applyOptions() {
         sfxVolume: sfxSlider ? parseInt(sfxSlider.value) : 80
     };
     
-    // IN LOCALSTORAGE SPEICHERN
     saveOptionsToLocalStorage();
-    
-    /* HIER OPTIONEN IM SPIEL ANWENDEN (z.B. Musiklautstärke, Sprache, etc.) */
-    applyGameOptions(currentOptions);
+    setMusicVolume(currentOptions.musicVolume);
 }
 
 function cancelOptions() {
-    // Beim Abbrechen die gespeicherten Werte neu laden (nicht die aktuellen Slider-Werte)
     loadCurrentOptions();
     showStartScreen();
 }
@@ -258,57 +268,11 @@ function showAreYouSureScreen() {
     showScreen(5);
 }
 
-// NEUE FUNKTION: Optionen im Spiel anwenden
-function applyGameOptions(options) {
-    // Beispiel für Audio-Integration
-    if (window.gameAudio && typeof window.gameAudio.setMusicVolume === 'function') {
-        window.gameAudio.setMusicVolume(options.musicVolume / 100);
-    } else {
-        console.log(`Applied Music Volume: ${options.musicVolume}%`);
-    }
-    
-    if (window.gameAudio && typeof window.gameAudio.setSfxVolume === 'function') {
-        window.gameAudio.setSfxVolume(options.sfxVolume / 100);
-    } else {
-        console.log(`Applied SFX Volume: ${options.sfxVolume}%`);
-    }
-}
-
-// NEUE FUNKTION: Echtzeit-Vorschau (optional)
-function updatePreviewVolume(type, volume) {
-    const normalizedVolume = volume / 100;
-    if (type === 'music') {
-        if (window.gameAudio && typeof window.gameAudio.previewMusicVolume === 'function') {
-            window.gameAudio.previewMusicVolume(normalizedVolume);
-        }
-    } else if (type === 'sfx') {
-        if (window.gameAudio && typeof window.gameAudio.previewSfxVolume === 'function') {
-            window.gameAudio.previewSfxVolume(normalizedVolume);
-        }
-    }
-}
-
-// NEUE FUNKTION: Gespeicherte Optionen löschen (für Debugging)
-function clearSavedOptions() {
-    localStorage.removeItem(STORAGE_KEYS.MUSIC_VOLUME);
-    localStorage.removeItem(STORAGE_KEYS.SFX_VOLUME);
-    console.log('Saved options cleared from localStorage');
-    currentOptions = { ...defaultOptions };
-    loadCurrentOptions();
-}
-
-/* Tutorial Funktionen */
-function showTutorialScreen() {
-    showScreen(4);
-    startTutorial();
-}
-
 function startTutorial() {
     tutorialStep = 0;
     tutorialActive = true;
     showTutorialDialog(0);
     
-    // Klick-Listener für Tutorial hinzufügen
     let tutorialScreen = document.getElementById("tutorialScreen");
     if (tutorialScreen) {
         tutorialScreen.addEventListener("click", nextTutorialDialog);
@@ -328,7 +292,6 @@ function showTutorialDialog(step) {
             stepSpan.textContent = `Step ${step + 1}/${tutorialDialogs.length}`;
         }
         
-        // Animation zurücksetzen
         let dialog = document.querySelector(".tutorial-dialog");
         if (dialog) {
             dialog.style.animation = "none";
@@ -354,13 +317,11 @@ function nextTutorialDialog() {
 function endTutorial() {
     tutorialActive = false;
     
-    // Entferne Klick-Listener
     let tutorialScreen = document.getElementById("tutorialScreen");
     if (tutorialScreen) {
         tutorialScreen.removeEventListener("click", nextTutorialDialog);
     }
     
-    // Zeige Abschlussmeldung
     let title = document.getElementById("tutorial-title");
     let text = document.getElementById("tutorial-text");
     
@@ -368,7 +329,6 @@ function endTutorial() {
         title.textContent = "🎉 Tutorial Complete! 🎉";
         text.textContent = "You're now ready to race! Click the button below to start the game.";
         
-        // Button zum Starten hinzufügen
         let dialog = document.querySelector(".tutorial-dialog");
         if (dialog && !document.getElementById("tutorial-start-btn")) {
             let startBtn = document.createElement("button");
@@ -380,7 +340,6 @@ function endTutorial() {
             };
             dialog.appendChild(startBtn);
             
-            // CSS für den Button
             let style = document.createElement("style");
             style.textContent = `
                 .tutorial-start-btn {
@@ -405,7 +364,6 @@ function endTutorial() {
         }
     }
     
-    // Klick-Hinweis entfernen
     let hint = document.querySelector(".click-hint");
     if (hint) hint.remove();
 }
@@ -425,29 +383,39 @@ showTutorialScreen = function() {
     setTimeout(showClickHint, 500);
 };
 
-
-/* LEADERBOARD FUNKTIONEN */
 function formatTime(seconds) {
   const mins = Math.floor(seconds / 60);
   const secs = (seconds % 60).toFixed(2);
   return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(5, '0')}`;
 }
 
-
-/* ON LOAD / EXIT GAME FUNCTIONS */
 window.onload = function () {
-  // Zuerst gespeicherte Optionen laden
-  currentOptions = loadOptionsFromLocalStorage();
-  console.log("Loaded options from localStorage:", currentOptions);
-  
-  // Dann UI initialisieren
-  setupVolumeSliders();
-  
-  // Optionen im Spiel anwenden (falls nötig)
-  applyGameOptions(currentOptions);
-  
-  // Start-Screen anzeigen
-  showStartScreen();
+    initBackgroundMusic();
+    currentOptions = loadOptionsFromLocalStorage();
+    setupVolumeSliders();
+    setMusicVolume(currentOptions.musicVolume);
+    
+    let startBtn = document.getElementById("start-game");
+    if (startBtn) {
+        startBtn.addEventListener("click", startBackgroundMusic);
+    }
+    
+    let optionsBtn = document.getElementById("options");
+    if (optionsBtn) {
+        optionsBtn.addEventListener("click", startBackgroundMusic);
+    }
+    
+    let leaderboardBtn = document.getElementById("leaderboard");
+    if (leaderboardBtn) {
+        leaderboardBtn.addEventListener("click", startBackgroundMusic);
+    }
+    
+    let tutorialBtn = document.getElementById("tutorial");
+    if (tutorialBtn) {
+        tutorialBtn.addEventListener("click", startBackgroundMusic);
+    }
+    
+    showStartScreen();
 };
 
 function exitGame() {
@@ -473,20 +441,13 @@ function exitGame() {
   `;
 }
 
-/* ------------------------------
-            AUDIO
------------------------------- */
-
 function onDragVolumeSlider(slider) {
     const value = slider.value;
     if (slider.id === "music-volume") {
         document.getElementById("music-value").innerHTML = value + "%";
-        // Optional: Echtzeit-Vorschau
-        updatePreviewVolume('music', parseInt(value));
+        setMusicVolume(parseInt(value));
     } 
     else if (slider.id === "sfx-volume") {
         document.getElementById("sfx-value").innerHTML = value + "%";
-        // Optional: Echtzeit-Vorschau
-        updatePreviewVolume('sfx', parseInt(value));
     }
 }
