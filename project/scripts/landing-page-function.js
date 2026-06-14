@@ -468,16 +468,3 @@ function onDragVolumeSlider(slider) {
     document.getElementById("sfx-value").innerHTML = value + "%";
   }
 }
-
-
-
-
-
-
-
-/*function testMusic() {
-    const audio = new Audio();
-    audio.src = 'background-music.mp3';
-    audio.play().catch(e => console.log('Fehler:', e.message));
-    console.log('Versuche:', audio.src);
-} */
