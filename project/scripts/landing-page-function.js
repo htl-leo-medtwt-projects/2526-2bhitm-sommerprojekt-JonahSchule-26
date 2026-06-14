@@ -157,7 +157,7 @@ function showTutorialScreen() {
 }
 
 function initBackgroundMusic() {
-  backgroundMusic = new Audio("./../assets/audio/background-music.mp3");
+  backgroundMusic = new Audio("background-music.mp3");
   backgroundMusic.loop = true;
   backgroundMusic.volume = currentOptions.musicVolume / 100;
 }
@@ -424,16 +424,14 @@ window.onload = function () {
     tutorialBtn.addEventListener("click", startBackgroundMusic);
   }
 
-  document.addEventListener(
-    "click",
-    function startMusic() {
-      if (backgroundMusic && backgroundMusic.paused) {
+
+  document.body.addEventListener("click", function startMusic() {
+    if (backgroundMusic && backgroundMusic.paused) {
         backgroundMusic.play().catch(() => {});
-      }
-      document.removeEventListener("click", startMusic);
-    },
-    { once: true },
-  );
+    }
+}, { once: true });
+
+
 
   showStartScreen();
 };
@@ -477,8 +475,9 @@ function onDragVolumeSlider(slider) {
 
 
 
-function testMusic() {
-    if (backgroundMusic) {
-        backgroundMusic.play().catch(e => console.log(e));
-    }
-}
+/*function testMusic() {
+    const audio = new Audio();
+    audio.src = 'background-music.mp3';
+    audio.play().catch(e => console.log('Fehler:', e.message));
+    console.log('Versuche:', audio.src);
+} */
