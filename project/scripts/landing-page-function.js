@@ -157,9 +157,10 @@ function showTutorialScreen() {
 }
 
 function initBackgroundMusic() {
-  backgroundMusic = new Audio("background-music.mp3");
+  backgroundMusic = new Audio("assets/audio/background-music.mp3");
   backgroundMusic.loop = true;
   backgroundMusic.volume = currentOptions.musicVolume / 100;
+  backgroundMusic.play().catch(() => {});
 }
 
 function startBackgroundMusic() {
@@ -424,14 +425,7 @@ window.onload = function () {
     tutorialBtn.addEventListener("click", startBackgroundMusic);
   }
 
-
-  document.body.addEventListener("click", function startMusic() {
-    if (backgroundMusic && backgroundMusic.paused) {
-        backgroundMusic.play().catch(() => {});
-    }
-}, { once: true });
-
-
+  initBackgroundMusic();
 
   showStartScreen();
 };
