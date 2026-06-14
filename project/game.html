@@ -15,22 +15,21 @@
     <section id="hub">
         <img src="./assets/img/the-hub.png" alt="The Hub" id="hub-image">
 
-        <!-- RACES -->
-        <button type="button" class="enter-race" id="race-button-1" onclick="go('race')">Enter<br>Race</button>
-        <button type="button" class="enter-race" id="race-button-2" onclick="go('race')">Enter<br>Race</button>
-        <button type="button" class="enter-race" id="race-button-3" onclick="go('race')">Enter<br>Race</button>
-        <button type="button" class="enter-race" id="race-button-4" onclick="go('race')">Enter<br>Race</button>
-        <button type="button" class="enter-race" id="race-button-5" onclick="go('race')">Enter<br>Race</button>
-        <button type="button" class="enter-race" id="race-button-6" onclick="go('race')">Enter<br>Race</button>
-        <button type="button" class="enter-race" id="race-button-7" onclick="go('race')">Enter<br>Race</button>
-        <button type="button" class="enter-race" id="race-button-8" onclick="go('race')">Enter<br>Race</button>
-        <button type="button" class="enter-race" id="race-button-9" onclick="go('race')">Enter<br>Race</button>
-        <button type="button" class="enter-race" id="race-button-10" onclick="go('race')">Enter<br>Race</button>
-        <button type="button" class="enter-race" id="race-button-11" onclick="go('race')">Enter<br>Race</button>
-        <button type="button" class="enter-race" id="race-button-12" onclick="go('race')">Enter<br>Race</button>
-        <button type="button" class="enter-race" id="race-button-13" onclick="go('race')">Enter<br>Race</button>
-        <button type="button" class="enter-race" id="race-button-14" onclick="go('race')">Enter<br>Race</button>
-
+        <!-- RACES mit IDs für jedes Rennen -->
+        <button type="button" class="enter-race" id="race-button-1" data-race-idx="0">Enter<br>Race</button>
+        <button type="button" class="enter-race" id="race-button-2" data-race-idx="1">Enter<br>Race</button>
+        <button type="button" class="enter-race" id="race-button-3" data-race-idx="2">Enter<br>Race</button>
+        <button type="button" class="enter-race" id="race-button-4" data-race-idx="3">Enter<br>Race</button>
+        <button type="button" class="enter-race" id="race-button-5" data-race-idx="4">Enter<br>Race</button>
+        <button type="button" class="enter-race" id="race-button-6" data-race-idx="5">Enter<br>Race</button>
+        <button type="button" class="enter-race" id="race-button-7" data-race-idx="6">Enter<br>Race</button>
+        <button type="button" class="enter-race" id="race-button-8" data-race-idx="7">Enter<br>Race</button>
+        <button type="button" class="enter-race" id="race-button-9" data-race-idx="8">Enter<br>Race</button>
+        <button type="button" class="enter-race" id="race-button-10" data-race-idx="9">Enter<br>Race</button>
+        <button type="button" class="enter-race" id="race-button-11" data-race-idx="10">Enter<br>Race</button>
+        <button type="button" class="enter-race" id="race-button-12" data-race-idx="11">Enter<br>Race</button>
+        <button type="button" class="enter-race" id="race-button-13" data-race-idx="12">Enter<br>Race</button>
+        <button type="button" class="enter-race" id="race-button-14" data-race-idx="13">Enter<br>Race</button>
 
         <button onclick="showGarage()" id="goToGarage-button">Garage</button>
         <div id="lives">
@@ -54,21 +53,16 @@
             <div id="motor" onclick="upgradeMotor()">
                 <img src="./assets/img/engine-icon.png" alt="Engine Icon">
                 <div id="motor-upgrade-text-box" class="upgrade-text-box">MOTOR</div>
-
                 <div class="upgrade-bar" id="motor-bar"></div>
             </div>
-
             <div id="grip" onclick="upgradeGrip()">
                 <img src="./assets/img/tyre.png" alt="Grip Icon">
                 <div id="grip-upgrade-text-box" class="upgrade-text-box">GRIP</div>
-
                 <div class="upgrade-bar" id="grip-bar"></div>
             </div>
-
             <div id="transmisson" onclick="upgradeTransmission()">
                 <img src="./assets/img/manual-transmission.png" alt="Transmission Icon">
                 <div id="transmission-upgrade-text-box" class="upgrade-text-box">TRANSMISSION</div>
-
                 <div class="upgrade-bar" id="transmission-bar"></div>
             </div>
         </div>
@@ -77,10 +71,7 @@
         </div>
         <img src="./assets/img/F1-Car-Garage.png" alt="Kart" id="img-of-kart">
     </section>
-
-    <section id="race">
-
-    </section>
+    <section id="race"></section>
 </body>
 
 </html>

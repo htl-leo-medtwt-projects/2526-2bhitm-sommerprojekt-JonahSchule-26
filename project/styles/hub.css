@@ -192,7 +192,7 @@ body {
     width: auto;
     image-rendering: pixelated;
     position: absolute;
-    bottom: 1%;
+    bottom: -10%;
     height: 70%;
     width: auto;
     left: 50%;
@@ -541,4 +541,125 @@ body {
     padding-bottom: 10px;
     font-size: x-large;
     font-weight: bold;
+}
+
+
+/* ---------------------------
+    CUSTOM MESSAGE OVERLAY
+--------------------------- */
+
+.message-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999999;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+}
+
+.message-container {
+    background: linear-gradient(135deg, #d62b00 0%, #8B1A00 100%);
+    border-radius: 1rem;
+    padding: 2rem;
+    min-width: 400px;
+    max-width: 500px;
+    text-align: center;
+    border: 2px solid #FFD400;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    animation: fadeIn 0.3s ease;
+}
+
+.message-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.message-title {
+    font-size: 2rem;
+    color: #FFD400;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    font-family: f1Font;
+    letter-spacing: 5px;
+}
+
+.message-text {
+    font-size: 1.2rem;
+    color: white;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+    font-family: f1Font;
+    letter-spacing: 2px;
+}
+
+.message-time {
+    font-size: 1.5rem;
+    color: #FFD400;
+    margin-bottom: 1.5rem;
+    font-family: monospace;
+    letter-spacing: 2px;
+}
+
+.message-btn {
+    padding: 0.75rem 2rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+    background: linear-gradient(to bottom, #00C2FF, #005BFF);
+    color: white;
+    border: none;
+    font-family: f1Font;
+    letter-spacing: 3px;
+}
+
+.message-btn:hover {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+}
+
+/* Victory Screen */
+.victory-container {
+    background: linear-gradient(135deg, #FFD400 0%, #FF8C00 100%);
+    border: 2px solid #fff;
+}
+
+.victory-container .message-title {
+    color: #8B1A00;
+}
+
+.victory-container .message-text {
+    color: #333;
+}
+
+.victory-container .message-time {
+    color: #8B1A00;
+}
+
+/* Leaderboard Tabelle im Victory Screen */
+.victory-leaderboard {
+    margin: 1rem 0;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.victory-leaderboard th {
+    color: #8B1A00;
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    opacity: 0.7;
+}
+
+.victory-leaderboard td {
+    color: #333;
+    padding: 4px 8px;
+    font-size: 0.9rem;
+}
+
+.victory-leaderboard td:nth-child(3) {
+    font-family: monospace;
 }

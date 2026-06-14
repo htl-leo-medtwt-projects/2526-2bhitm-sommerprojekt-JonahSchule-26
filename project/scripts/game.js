@@ -40,10 +40,10 @@ const raceSection = document.getElementById("race");
 const UPGRADES = [0, 0, 0];
 let lives = 3;
 let raceRunning = false;
+let currentRacePlaying = null;
 
 let playerName = "";
 let raceWins = new Array(14).fill(false);
-let currentRaceIdx = -1;
 let timerStartTime = null;
 let timerInterval = null;
 let timerEl = null;
@@ -56,66 +56,183 @@ let backgroundMusic = null;
 let sfxVolume = 0.8;
 
 function loadAudioSettings() {
-    const savedMusicVolume = localStorage.getItem('game_music_volume');
-    const savedSfxVolume = localStorage.getItem('game_sfx_volume');
-    
-    if (savedMusicVolume !== null) {
-        setMusicVolume(parseInt(savedMusicVolume));
-    }
-    if (savedSfxVolume !== null) {
-        sfxVolume = parseInt(savedSfxVolume) / 100;
-    }
+  const savedMusicVolume = localStorage.getItem("game_music_volume");
+  const savedSfxVolume = localStorage.getItem("game_sfx_volume");
+
+  if (savedMusicVolume !== null) {
+    setMusicVolume(parseInt(savedMusicVolume));
+  }
+  if (savedSfxVolume !== null) {
+    sfxVolume = parseInt(savedSfxVolume) / 100;
+  }
 }
 
 function initBackgroundMusic() {
-    backgroundMusic = new Audio('assets/audio/background-music.mp3');
-    backgroundMusic.loop = true;
-    loadAudioSettings();
+  backgroundMusic = new Audio("assets/audio/background-music.mp3");
+  backgroundMusic.loop = true;
+  loadAudioSettings();
 }
 
 function startBackgroundMusic() {
-    if (!backgroundMusic) {
-        initBackgroundMusic();
-    }
-    if (backgroundMusic && backgroundMusic.paused) {
-        backgroundMusic.play().catch(() => {});
-    }
+  if (!backgroundMusic) {
+    initBackgroundMusic();
+  }
+  if (backgroundMusic && backgroundMusic.paused) {
+    backgroundMusic.play().catch(() => {});
+  }
 }
 
 function setMusicVolume(volume) {
-    if (backgroundMusic) {
-        backgroundMusic.volume = volume / 100;
-    }
+  if (backgroundMusic) {
+    backgroundMusic.volume = volume / 100;
+  }
 }
 
 function playSfx(soundFile) {
-    const sfx = new Audio(`assets/audio/${soundFile}`);
-    sfx.volume = sfxVolume;
-    sfx.play().catch(() => {});
+  const sfx = new Audio(`assets/audio/${soundFile}`);
+  sfx.volume = sfxVolume;
+  sfx.play().catch(() => {});
 }
 
-/* =========================================================
-   SOUND EFFECTS
-========================================================= */
-
 function playCrashSound() {
-    playSfx('crash.wav');
+  playSfx("crash.wav");
 }
 
 function playFinishSound() {
-    playSfx('finish.mp3');
+  playSfx("finish.mp3");
 }
 
 function playCoinSound() {
-    playSfx('coin.mp3');
+  playSfx("coin.mp3");
 }
 
 function playUpgradeSound() {
-    playSfx('upgrade.wav');
+  playSfx("upgrade.wav");
 }
 
 function playButtonClickSound() {
-    playSfx('click.mp3');
+  playSfx("click.mp3");
+}
+
+/* =========================================================
+   RACE BUTTON SETUP
+========================================================= */
+
+function setupRaceButtons() {
+  for (let i = 1; i <= 14; i++) {
+    const btn = document.getElementById(`race-button-${i}`);
+    if (btn) {
+      const raceIdx = i - 1;
+      btn.onclick = () => {
+        playButtonClickSound();
+        if (raceWins[raceIdx]) {
+          showAlreadyPlayedMessage();
+        } else {
+          currentRacePlaying = raceIdx;
+          go("race");
+        }
+      };
+    }
+  }
+}
+
+function showAlreadyPlayedMessage() {
+  const overlay = document.createElement("div");
+  overlay.className = "message-overlay";
+  overlay.innerHTML = `
+        <div class="message-container">
+            <div class="message-icon">⚠️</div>
+            <h2 class="message-title">RACE ALREADY PLAYED</h2>
+            <p class="message-text">You have already won this race.<br>Choose another race.</p>
+            <button class="message-btn" onclick="this.closest('.message-overlay').remove()">OK</button>
+        </div>
+    `;
+  document.body.appendChild(overlay);
+}
+
+/* =========================================================
+   VICTORY SCREEN
+========================================================= */
+
+function showVictoryScreen() {
+  const elapsed = (Date.now() - timerStartTime) / 1000;
+  stopTimer();
+
+  const records = JSON.parse(localStorage.getItem("raceRecords") || "[]");
+  const top3 = records.slice(0, 3);
+
+  const overlay = document.createElement("div");
+  overlay.className = "message-overlay";
+
+  let top3Html = "";
+  if (top3.length > 0) {
+    top3Html = `
+            <table class="victory-leaderboard">
+                <thead>
+                    <tr>
+                        <th></th><th>NAME</th><th>TIME</th><th>DATE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${top3
+                      .map((r, i) => {
+                        const medal = ["🥇", "🥈", "🥉"][i];
+                        return `
+                            <tr>
+                                <td>${medal}</td>
+                                <td>${r.name}</td>
+                                <td>${formatTime(r.time)}</td>
+                                <td>${r.date}</td>
+                            </tr>
+                        `;
+                      })
+                      .join("")}
+                </tbody>
+            </table>
+        `;
+  }
+
+  overlay.innerHTML = `
+        <div class="message-container victory-container">
+            <div class="message-icon">🏆🏆🏆</div>
+            <h2 class="message-title">CONGRATULATIONS!</h2>
+            <p class="message-text">You have mastered all 14 races!</p>
+            <p class="message-text">${playerName}</p>
+            <p class="message-time">⏱️ ${formatTime(elapsed)}</p>
+            ${top3Html}
+            <button class="message-btn" onclick="location.reload()">NEW GAME</button>
+        </div>
+    `;
+  document.body.appendChild(overlay);
+
+  records.push({
+    name: playerName,
+    time: elapsed,
+    date: new Date().toLocaleDateString("de-AT"),
+    completed: true,
+  });
+  records.sort((a, b) => a.time - b.time);
+  localStorage.setItem("raceRecords", JSON.stringify(records.slice(0, 10)));
+}
+
+function showRaceFailedMessage() {
+  const overlay = document.createElement("div");
+  overlay.className = "message-overlay";
+  overlay.innerHTML = `
+        <div class="message-container">
+            <div class="message-icon">💥</div>
+            <h2 class="message-title">RACE FAILED!</h2>
+            <p class="message-text">You lost all 5 lives.<br>Try again!</p>
+            <button class="message-btn" onclick="this.closest('.message-overlay').remove(); go('hub')">BACK</button>
+        </div>
+    `;
+  document.body.appendChild(overlay);
+}
+
+function checkAllRacesComplete() {
+  if (raceWins.every((won) => won === true)) {
+    showVictoryScreen();
+  }
 }
 
 /* =========================================================
@@ -151,71 +268,6 @@ function stopTimer() {
   timerInterval = null;
 }
 
-function checkAllRacesWon() {
-  if (!raceWins.every(Boolean)) return;
-
-  stopTimer();
-  const elapsed = (Date.now() - timerStartTime) / 1000;
-  if (timerEl) timerEl.textContent = formatTime(elapsed);
-
-  const records = JSON.parse(localStorage.getItem("raceRecords") || "[]");
-  records.push({
-    name: playerName,
-    time: elapsed,
-    date: new Date().toLocaleDateString("de-AT"),
-  });
-  records.sort((a, b) => a.time - b.time);
-  localStorage.setItem("raceRecords", JSON.stringify(records));
-
-  showCompletionScreen(elapsed, records);
-}
-
-function showCompletionScreen(elapsed, records) {
-  const overlay = document.createElement("div");
-  overlay.className = "completion-overlay";
-
-  const top3 = records
-    .slice(0, 3)
-    .map((r, i) => {
-      const medal = ["🥇", "🥈", "🥉"][i];
-      return `
-      <tr>
-        <td>${medal}</td>
-        <td>${r.name}</td>
-        <td>${formatTime(r.time)}</td>
-        <td>${r.date}</td>
-      </tr>
-    `;
-    })
-    .join("");
-
-  overlay.innerHTML = `
-    <div class="completion-icon">🏁</div>
-    <h1>Alle 14 Rennen gewonnen!</h1>
-    <p>${playerName} – Gesamtzeit: <strong>${formatTime(elapsed)}</strong></p>
-    <table>
-      <thead>
-        <tr>
-          <th></th><th>Name</th><th>Zeit</th><th>Datum</th>
-        </tr>
-      </thead>
-      <tbody>${top3}</tbody>
-    </table>
-    <button class="completion-close-btn">Nochmal spielen</button>
-  `;
-
-  document.body.appendChild(overlay);
-
-  document.querySelector(".completion-close-btn").onclick = () => {
-    overlay.remove();
-    raceWins.fill(false);
-    timerStartTime = null;
-    if (timerEl) timerEl.textContent = "00:00.00";
-    startTimer();
-    go("hub");
-  };
-}
-
 function createNameScreen() {
   const overlay = document.createElement("div");
   overlay.id = "name-screen";
@@ -224,15 +276,15 @@ function createNameScreen() {
   overlay.innerHTML = `
     <div class="name-icon">🏎️</div>
     <h1 class="name-title">Racing Game</h1>
-    <p class="name-subtitle">Gib deinen Namen ein, bevor das Rennen startet:</p>
-    <input id="name-input" class="name-input" type="text" maxlength="20" placeholder="Dein Name…">
-    <button id="name-confirm" class="name-confirm-btn">Los geht's!</button>
+    <p class="name-subtitle">Enter your name before the race starts:</p>
+    <input id="name-input" class="name-input" type="text" maxlength="20" placeholder="Your name…">
+    <button id="name-confirm" class="name-confirm-btn">Let's go!</button>
   `;
   document.body.appendChild(overlay);
 
   const confirm = () => {
     const val = document.getElementById("name-input").value.trim();
-    playerName = val || "Unbekannt";
+    playerName = val || "Unknown";
     overlay.remove();
     startTimer();
     go("hub");
@@ -260,6 +312,43 @@ function showHub() {
   raceSection.style.display = "block";
   raceSection.style.pointerEvents = "none";
   raceSection.style.zIndex = "5";
+
+  updateLivesDisplay();
+  updateRaceButtonsState();
+}
+
+function updateRaceButtonsState() {
+  for (let i = 0; i < 14; i++) {
+    const btn = document.getElementById(`race-button-${i + 1}`);
+    if (btn) {
+      if (raceWins[i]) {
+        btn.style.opacity = "0.5";
+        btn.style.filter = "grayscale(0.5)";
+        btn.style.cursor = "not-allowed";
+        btn.innerHTML = "✓<br>Done";
+      } else {
+        btn.style.opacity = "1";
+        btn.style.filter = "none";
+        btn.style.cursor = "pointer";
+        btn.innerHTML = "Enter<br>Race";
+      }
+    }
+  }
+}
+
+function updateLivesDisplay() {
+  for (let i = 1; i <= 3; i++) {
+    const liveImg = document.getElementById(`live${i}`);
+    if (liveImg) {
+      if (i <= lives) {
+        liveImg.style.opacity = "1";
+        liveImg.style.filter = "none";
+      } else {
+        liveImg.style.opacity = "0.3";
+        liveImg.style.filter = "grayscale(1)";
+      }
+    }
+  }
 }
 
 function showGarage() {
@@ -298,31 +387,31 @@ function showGarage() {
 let coins = 0;
 
 function upgradeMotor() {
-  if(coins > 1 && UPGRADES[0] < 7) {
+  if (coins > 1 && UPGRADES[0] < 7) {
     UPGRADES[0]++;
     coins -= 1;
-    playUpgradeSound();
     updateUpgradeBars();
+    playUpgradeSound();
     updateCoinsDisplay();
   }
 }
 
 function upgradeGrip() {
-  if(coins > 1 && UPGRADES[1] < 7) {
+  if (coins > 1 && UPGRADES[1] < 7) {
     UPGRADES[1]++;
     coins -= 1;
-    playUpgradeSound();
     updateUpgradeBars();
+    playUpgradeSound();
     updateCoinsDisplay();
   }
 }
 
 function upgradeTransmission() {
-  if(coins > 1 && UPGRADES[2] < 7) {
+  if (coins > 1 && UPGRADES[2] < 7) {
     UPGRADES[2]++;
     coins -= 1;
-    playUpgradeSound();
     updateUpgradeBars();
+    playUpgradeSound();
     updateCoinsDisplay();
   }
 }
@@ -348,10 +437,6 @@ function renderUpgradeBars() {
   updateUpgradeBars();
 }
 
-/* =========================================================
-    COINS DISPLAY
-========================================================= */
-
 function updateCoinsDisplay() {
   let coinsAmount = document.getElementById("coins-amount");
   if (coinsAmount) {
@@ -359,20 +444,32 @@ function updateCoinsDisplay() {
   }
 }
 
-/* =========================================================
-   GARAGE BUTTONS
-========================================================= */
-
 function setupGarageButtons() {
-    const motorBtn = document.getElementById("motor-upgrade-text-box");
-    const gripBtn = document.getElementById("grip-upgrade-text-box");
-    const transBtn = document.getElementById("transmission-upgrade-text-box");
-    const backBtn = document.querySelector("#garage .back-button button");
-    
-    if (motorBtn) motorBtn.onclick = () => { playButtonClickSound(); upgradeMotor(); };
-    if (gripBtn) gripBtn.onclick = () => { playButtonClickSound(); upgradeGrip(); };
-    if (transBtn) transBtn.onclick = () => { playButtonClickSound(); upgradeTransmission(); };
-    if (backBtn) backBtn.onclick = () => { playButtonClickSound(); go("hub"); };
+  const motorBtn = document.getElementById("motor-upgrade-text-box");
+  const gripBtn = document.getElementById("grip-upgrade-text-box");
+  const transBtn = document.getElementById("transmission-upgrade-text-box");
+  const backBtn = document.querySelector("#garage .back-button button");
+
+  if (motorBtn)
+    motorBtn.onclick = () => {
+      playButtonClickSound();
+      upgradeMotor();
+    };
+  if (gripBtn)
+    gripBtn.onclick = () => {
+      playButtonClickSound();
+      upgradeGrip();
+    };
+  if (transBtn)
+    transBtn.onclick = () => {
+      playButtonClickSound();
+      upgradeTransmission();
+    };
+  if (backBtn)
+    backBtn.onclick = () => {
+      playButtonClickSound();
+      go("hub");
+    };
 }
 
 /* =========================================================
@@ -411,6 +508,11 @@ scene("hub", () => {
 ========================================================= */
 
 scene("race", () => {
+  if (currentRacePlaying === null) {
+    go("hub");
+    return;
+  }
+
   const raceDuration = 45 - UPGRADES[2] * 2.5;
   let raceLives = 5;
 
@@ -433,10 +535,6 @@ scene("race", () => {
     scale(0.65, 1.3),
     z(-10),
   ]);
-
-  /* ---------------------------------------------------------
-     LANE MARKINGS
-  --------------------------------------------------------- */
 
   const MARK_SPEED = 260;
 
@@ -502,8 +600,6 @@ scene("race", () => {
   addDashedLine(width() * 0.6);
   addBorderLine(width() * 0.195);
   addBorderLine(width() * 0.798);
-
-  /* ------------------------------------------------------- */
 
   setTimeout(() => {
     document.querySelector("canvas")?.focus();
@@ -610,26 +706,21 @@ scene("race", () => {
     destroy(o);
     shake(8);
     playCrashSound();
-    
+
     raceLives--;
-    
+
     if (raceLives <= 0) {
-      lives--;
       raceRunning = false;
       shake(12);
-      
-      get("obstacle").forEach(obs => destroy(obs));
-      
-      add([
-        text("RACE FAILED!", 48),
-        pos(width() / 2, height() / 2),
-        anchor("center"),
-        color(255, 255, 255),
-        fixed(),
-        z(100),
-      ]);
-      
+
+      get("obstacle").forEach((obs) => destroy(obs));
+
+      wait(0.5, () => {
+        showRaceFailedMessage();
+      });
+
       wait(1.5, () => {
+        currentRacePlaying = null;
         go("hub");
       });
     }
@@ -643,7 +734,7 @@ scene("race", () => {
 
   wait(raceDuration, () => {
     if (!raceRunning) return;
-    
+
     spawningStopped = true;
 
     const finishLine = add([
@@ -662,9 +753,15 @@ scene("race", () => {
         playFinishSound();
 
         wait(0.5, () => {
-          coins++;
-          playCoinSound();
-          updateCoinsDisplay();
+          if (currentRacePlaying !== null && !raceWins[currentRacePlaying]) {
+            raceWins[currentRacePlaying] = true;
+            coins++;
+            playCoinSound();
+            updateCoinsDisplay();
+            updateRaceButtonsState();
+            checkAllRacesComplete();
+          }
+          currentRacePlaying = null;
           go("hub");
         });
       }
@@ -676,15 +773,13 @@ scene("race", () => {
    START
 ========================================================= */
 
-window.onload = function() {
-    initBackgroundMusic();
-    loadAudioSettings();
-    setupGarageButtons();
-    
-    document.body.addEventListener("click", function startMusicOnce() {
-        startBackgroundMusic();
-        document.body.removeEventListener("click", startMusicOnce);
-    }, { once: true });
+window.onload = function () {
+  initBackgroundMusic();
+  loadAudioSettings();
+  setupGarageButtons();
+  setupRaceButtons();
+  updateRaceButtonsState();
+  updateLivesDisplay();
 };
 
 createTimerDisplay();
