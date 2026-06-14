@@ -49,6 +49,76 @@ let timerInterval = null;
 let timerEl = null;
 
 /* =========================================================
+   AUDIO SYSTEM
+========================================================= */
+
+let backgroundMusic = null;
+let sfxVolume = 0.8;
+
+function loadAudioSettings() {
+    const savedMusicVolume = localStorage.getItem('game_music_volume');
+    const savedSfxVolume = localStorage.getItem('game_sfx_volume');
+    
+    if (savedMusicVolume !== null) {
+        setMusicVolume(parseInt(savedMusicVolume));
+    }
+    if (savedSfxVolume !== null) {
+        sfxVolume = parseInt(savedSfxVolume) / 100;
+    }
+}
+
+function initBackgroundMusic() {
+    backgroundMusic = new Audio('assets/audio/background-music.mp3');
+    backgroundMusic.loop = true;
+    loadAudioSettings();
+}
+
+function startBackgroundMusic() {
+    if (!backgroundMusic) {
+        initBackgroundMusic();
+    }
+    if (backgroundMusic && backgroundMusic.paused) {
+        backgroundMusic.play().catch(() => {});
+    }
+}
+
+function setMusicVolume(volume) {
+    if (backgroundMusic) {
+        backgroundMusic.volume = volume / 100;
+    }
+}
+
+function playSfx(soundFile) {
+    const sfx = new Audio(`assets/audio/${soundFile}`);
+    sfx.volume = sfxVolume;
+    sfx.play().catch(() => {});
+}
+
+/* =========================================================
+   SOUND EFFECTS
+========================================================= */
+
+function playCrashSound() {
+    playSfx('crash.mp3');
+}
+
+function playFinishSound() {
+    playSfx('finish.mp3');
+}
+
+function playCoinSound() {
+    playSfx('coin.mp3');
+}
+
+function playUpgradeSound() {
+    playSfx('upgrade.mp3');
+}
+
+function playButtonClickSound() {
+    playSfx('click.mp3');
+}
+
+/* =========================================================
    TIMER & NAME HELPERS
 ========================================================= */
 
@@ -231,6 +301,7 @@ function upgradeMotor() {
   if(coins > 1 && UPGRADES[0] < 7) {
     UPGRADES[0]++;
     coins -= 1;
+    playUpgradeSound();
     updateUpgradeBars();
     updateCoinsDisplay();
   }
@@ -240,6 +311,7 @@ function upgradeGrip() {
   if(coins > 1 && UPGRADES[1] < 7) {
     UPGRADES[1]++;
     coins -= 1;
+    playUpgradeSound();
     updateUpgradeBars();
     updateCoinsDisplay();
   }
@@ -249,6 +321,7 @@ function upgradeTransmission() {
   if(coins > 1 && UPGRADES[2] < 7) {
     UPGRADES[2]++;
     coins -= 1;
+    playUpgradeSound();
     updateUpgradeBars();
     updateCoinsDisplay();
   }
@@ -284,6 +357,22 @@ function updateCoinsDisplay() {
   if (coinsAmount) {
     coinsAmount.innerHTML = `Coins: ${coins}`;
   }
+}
+
+/* =========================================================
+   GARAGE BUTTONS
+========================================================= */
+
+function setupGarageButtons() {
+    const motorBtn = document.getElementById("motor-upgrade-text-box");
+    const gripBtn = document.getElementById("grip-upgrade-text-box");
+    const transBtn = document.getElementById("transmission-upgrade-text-box");
+    const backBtn = document.querySelector("#garage .back-button button");
+    
+    if (motorBtn) motorBtn.onclick = () => { playButtonClickSound(); upgradeMotor(); };
+    if (gripBtn) gripBtn.onclick = () => { playButtonClickSound(); upgradeGrip(); };
+    if (transBtn) transBtn.onclick = () => { playButtonClickSound(); upgradeTransmission(); };
+    if (backBtn) backBtn.onclick = () => { playButtonClickSound(); go("hub"); };
 }
 
 /* =========================================================
@@ -520,6 +609,7 @@ scene("race", () => {
   car.onCollide("obstacle", (o) => {
     destroy(o);
     shake(8);
+    playCrashSound();
     
     raceLives--;
     
@@ -569,9 +659,11 @@ scene("race", () => {
     finishLine.onUpdate(() => {
       if (finishLine.pos.y > height() + 120) {
         raceRunning = false;
+        playFinishSound();
 
         wait(0.5, () => {
           coins++;
+          playCoinSound();
           updateCoinsDisplay();
           go("hub");
         });
@@ -583,6 +675,17 @@ scene("race", () => {
 /* =========================================================
    START
 ========================================================= */
+
+window.onload = function() {
+    initBackgroundMusic();
+    loadAudioSettings();
+    setupGarageButtons();
+    
+    document.body.addEventListener("click", function startMusicOnce() {
+        startBackgroundMusic();
+        document.body.removeEventListener("click", startMusicOnce);
+    }, { once: true });
+};
 
 createTimerDisplay();
 createNameScreen();
