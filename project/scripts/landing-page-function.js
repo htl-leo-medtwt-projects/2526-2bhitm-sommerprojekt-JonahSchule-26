@@ -155,7 +155,7 @@ function showTutorialScreen() {
 }
 
 function initBackgroundMusic() {
-    backgroundMusic = new Audio('assets/music/background-music.mp3');
+    backgroundMusic = new Audio('../assets/audio/background-music.mp3');
     backgroundMusic.loop = true;
     backgroundMusic.volume = currentOptions.musicVolume / 100;
 }
