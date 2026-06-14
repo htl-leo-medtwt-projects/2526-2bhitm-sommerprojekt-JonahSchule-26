@@ -31,13 +31,10 @@
         <button type="button" class="enter-race" id="race-button-13" data-race-idx="12">Enter<br>Race</button>
         <button type="button" class="enter-race" id="race-button-14" data-race-idx="13">Enter<br>Race</button>
 
-        <button onclick="showGarage()" id="goToGarage-button">Garage</button>
+        <button onclick="showGarage(), playButtonClickSound()" id="goToGarage-button">Garage</button>
         <div id="lives">
-            Lives left:
-            <img src="./assets/img/Heart.png" alt="Live Full" class="live" id="live1">
-            <img src="./assets/img/Heart.png" alt="Live Full" class="live" id="live2">
-            <img src="./assets/img/Heart.png" alt="Live Full" class="live" id="live3">
-        </div>
+    Lives left: <span id="lives-count">3</span>
+</div>
         <div id="garage-power">
             <div id="power-text">Power: 0</div>
             <div id="power-bar">

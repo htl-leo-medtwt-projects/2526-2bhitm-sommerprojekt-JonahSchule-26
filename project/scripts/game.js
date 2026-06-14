@@ -710,6 +710,9 @@ scene("race", () => {
     raceLives--;
 
     if (raceLives <= 0) {
+      lives--;
+      updateLivesDisplay();
+      
       raceRunning = false;
       shake(12);
 
@@ -740,14 +743,25 @@ scene("race", () => {
     const finishLine = add([
       rect(width(), 80),
       pos(0, -100),
-      color(255, 255, 255),
+      color(0, 0, 0),
       fixed(),
       move(DOWN, 260),
       area(),
       outline(6),
     ]);
 
+    const finishText = add([
+      text("FINISH", 36),
+      pos(width() / 2, finishLine.pos.y + 40),
+      anchor("center"),
+      color(255, 215, 0),
+      fixed(),
+      z(1),
+    ]);
+
     finishLine.onUpdate(() => {
+      finishText.pos.y = finishLine.pos.y + 40;
+      
       if (finishLine.pos.y > height() + 120) {
         raceRunning = false;
         playFinishSound();
@@ -768,6 +782,15 @@ scene("race", () => {
     });
   });
 });
+
+
+
+function updateLivesDisplay() {
+  const livesCountSpan = document.getElementById("lives-count");
+  if (livesCountSpan) {
+    livesCountSpan.textContent = lives;
+  }
+}
 
 /* =========================================================
    START
