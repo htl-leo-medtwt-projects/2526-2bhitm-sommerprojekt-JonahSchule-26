@@ -41,7 +41,6 @@ const UPGRADES = [0, 0, 0];
 let lives = 3;
 let raceRunning = false;
 
-// --- Spieler & Timer ---
 let playerName = "";
 let raceWins = new Array(14).fill(false);
 let currentRaceIdx = -1;
@@ -89,7 +88,6 @@ function checkAllRacesWon() {
   const elapsed = (Date.now() - timerStartTime) / 1000;
   if (timerEl) timerEl.textContent = formatTime(elapsed);
 
-  // In localStorage speichern
   const records = JSON.parse(localStorage.getItem("raceRecords") || "[]");
   records.push({
     name: playerName,
@@ -234,6 +232,7 @@ function upgradeMotor() {
     UPGRADES[0]++;
     coins -= 1;
     updateUpgradeBars();
+    updateCoinsDisplay();
   }
 }
 
@@ -242,6 +241,7 @@ function upgradeGrip() {
     UPGRADES[1]++;
     coins -= 1;
     updateUpgradeBars();
+    updateCoinsDisplay();
   }
 }
 
@@ -250,6 +250,7 @@ function upgradeTransmission() {
     UPGRADES[2]++;
     coins -= 1;
     updateUpgradeBars();
+    updateCoinsDisplay();
   }
 }
 
@@ -273,7 +274,6 @@ function updateUpgradeBars() {
 function renderUpgradeBars() {
   updateUpgradeBars();
 }
-
 
 /* =========================================================
     COINS DISPLAY
@@ -323,6 +323,7 @@ scene("hub", () => {
 
 scene("race", () => {
   const raceDuration = 45 - UPGRADES[2] * 2.5;
+  let raceLives = 5;
 
   raceSection.style.display = "block";
   raceSection.style.pointerEvents = "auto";
@@ -350,7 +351,6 @@ scene("race", () => {
 
   const MARK_SPEED = 260;
 
-  // Gestrichelte weiße Linie zwischen zwei Spuren
   function addDashedLine(x) {
     const dashH = 50;
     const gap = 45;
@@ -380,7 +380,6 @@ scene("race", () => {
     });
   }
 
-  // Durchgezogene, abwechselnd rot-weiße Randlinie
   function addBorderLine(x) {
     const stripeH = 42;
     const lineW = 22;
@@ -410,11 +409,8 @@ scene("race", () => {
     });
   }
 
-  // Gestrichelte Linien zwischen Spur 1–2 und Spur 2–3
   addDashedLine(width() * 0.4);
   addDashedLine(width() * 0.6);
-
-  // Rot-weiße Randlinien außen (links von Spur 1, rechts von Spur 3)
   addBorderLine(width() * 0.195);
   addBorderLine(width() * 0.798);
 
@@ -424,7 +420,6 @@ scene("race", () => {
     document.querySelector("canvas")?.focus();
   }, 50);
 
-  lives = 3;
   raceRunning = true;
   let spawningStopped = false;
 
@@ -460,7 +455,6 @@ scene("race", () => {
   let input = 0;
 
   const maxSpeed = 10 + UPGRADES[0] + UPGRADES[1];
-
   const slideBase = 0.95;
   const slideCoeff = slideBase * (1 - UPGRADES[1] / 7);
 
@@ -487,20 +481,17 @@ scene("race", () => {
     if (!raceRunning) return;
 
     if (input !== 0) {
-      // Sofort auf Maximalgeschwindigkeit in Fahrtrichtung setzen
       carVelX = input * maxSpeed;
     } else {
-      // Sliding: frameunabhängig über dt normalisiert
       if (UPGRADES[1] >= 7) {
-        carVelX = 0; // kein Rutschen
+        carVelX = 0;
       } else {
-        carVelX *= Math.pow(slideCoeff, dt() * 60); // framerate-unabhängig
+        carVelX *= Math.pow(slideCoeff, dt() * 60);
         if (Math.abs(carVelX) < 0.5) carVelX = 0;
       }
     }
 
     car.pos.x += carVelX * 60 * dt();
-
     car.pos.x = clamp(car.pos.x, lanePositions[0] - 80, lanePositions[2] + 80);
   });
 
@@ -528,16 +519,41 @@ scene("race", () => {
 
   car.onCollide("obstacle", (o) => {
     destroy(o);
-    shake(6);
+    shake(8);
+    
+    raceLives--;
+    
+    if (raceLives <= 0) {
+      lives--;
+      raceRunning = false;
+      shake(12);
+      
+      get("obstacle").forEach(obs => destroy(obs));
+      
+      add([
+        text("RACE FAILED!", 48),
+        pos(width() / 2, height() / 2),
+        anchor("center"),
+        color(255, 255, 255),
+        fixed(),
+        z(100),
+      ]);
+      
+      wait(1.5, () => {
+        go("hub");
+      });
+    }
   });
 
-  const ui = add([text("Lives: 3"), pos(20, 20), fixed()]);
+  const ui = add([text(`Lives: ${raceLives}`), pos(20, 20), fixed()]);
 
   onUpdate(() => {
-    ui.text = `Lives: ${lives}`;
+    ui.text = `Lives: ${raceLives}`;
   });
 
   wait(raceDuration, () => {
+    if (!raceRunning) return;
+    
     spawningStopped = true;
 
     const finishLine = add([
@@ -556,6 +572,7 @@ scene("race", () => {
 
         wait(0.5, () => {
           coins++;
+          updateCoinsDisplay();
           go("hub");
         });
       }
@@ -566,7 +583,6 @@ scene("race", () => {
 /* =========================================================
    START
 ========================================================= */
-
 
 createTimerDisplay();
 createNameScreen();
