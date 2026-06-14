@@ -53,8 +53,11 @@ const SCREEN = [
 const defaultOptions = {
     musicVolume: 70,
     sfxVolume: 80,
-    option1: 'normal',
-    option2: 'de'
+};
+
+const STORAGE_KEYS = {
+    MUSIC_VOLUME: 'game_music_volume',
+    SFX_VOLUME: 'game_sfx_volume'
 };
 
 
@@ -153,22 +156,36 @@ function showTutorialScreen() {
   showScreen(4);
 }
 
-/* OPTIONEN LADEN UND SPEICHERN */
+/* OPTIONEN LADEN UND SPEICHERN - localStorage INTEGRATION */
+function saveOptionsToLocalStorage() {
+    localStorage.setItem(STORAGE_KEYS.MUSIC_VOLUME, currentOptions.musicVolume);
+    localStorage.setItem(STORAGE_KEYS.SFX_VOLUME, currentOptions.sfxVolume);
+    console.log("Options saved to localStorage:", currentOptions);
+}
+
+function loadOptionsFromLocalStorage() {
+    const savedMusicVolume = localStorage.getItem(STORAGE_KEYS.MUSIC_VOLUME);
+    const savedSfxVolume = localStorage.getItem(STORAGE_KEYS.SFX_VOLUME);
+    
+    return {
+        musicVolume: savedMusicVolume !== null ? parseInt(savedMusicVolume) : defaultOptions.musicVolume,
+        sfxVolume: savedSfxVolume !== null ? parseInt(savedSfxVolume) : defaultOptions.sfxVolume
+    };
+}
+
 function loadCurrentOptions() {
-    // Slider Werte auf aktuelle Optionen setzen
+    // Lade aus localStorage statt aus defaultOptions
+    currentOptions = loadOptionsFromLocalStorage();
+    
     let musicSlider = document.getElementById('music-volume');
     let sfxSlider = document.getElementById('sfx-volume');
     let musicValue = document.getElementById('music-value');
     let sfxValue = document.getElementById('sfx-value');
-    let option1 = document.getElementById('option-1');
-    let option2 = document.getElementById('option-2');
     
     if (musicSlider) musicSlider.value = currentOptions.musicVolume;
     if (sfxSlider) sfxSlider.value = currentOptions.sfxVolume;
-    if (musicValue) musicValue.textContent = currentOptions.musicVolume + '%';
-    if (sfxValue) sfxValue.textContent = currentOptions.sfxVolume + '%';
-    if (option1) option1.value = currentOptions.option1;
-    if (option2) option2.value = currentOptions.option2;
+    if (musicValue) musicValue.innerHTML = currentOptions.musicVolume + '%';
+    if (sfxValue) sfxValue.innerHTML = currentOptions.sfxVolume + '%';
 }
 
 function setupVolumeSliders() {
@@ -179,13 +196,17 @@ function setupVolumeSliders() {
     
     if (musicSlider) {
         musicSlider.addEventListener('input', function() {
-            musicValue.textContent = this.value + '%';
+            musicValue.innerHTML = this.value + '%';
+            // Echtzeit-Vorschau (optional)
+            updatePreviewVolume('music', parseInt(this.value));
         });
     }
     
     if (sfxSlider) {
         sfxSlider.addEventListener('input', function() {
-            sfxValue.textContent = this.value + '%';
+            sfxValue.innerHTML = this.value + '%';
+            // Echtzeit-Vorschau (optional)
+            updatePreviewVolume('sfx', parseInt(this.value));
         });
     }
 }
@@ -198,37 +219,37 @@ function resetOptions() {
     let sfxSlider = document.getElementById('sfx-volume');
     let musicValue = document.getElementById('music-value');
     let sfxValue = document.getElementById('sfx-value');
-    let option1 = document.getElementById('option-1');
-    let option2 = document.getElementById('option-2');
     
     if (musicSlider) musicSlider.value = defaultOptions.musicVolume;
     if (sfxSlider) sfxSlider.value = defaultOptions.sfxVolume;
     if (musicValue) musicValue.textContent = defaultOptions.musicVolume + '%';
     if (sfxValue) sfxValue.textContent = defaultOptions.sfxVolume + '%';
-    if (option1) option1.value = defaultOptions.option1;
-    if (option2) option2.value = defaultOptions.option2;
+    
+    // Zurücksetzen in localStorage
+    saveOptionsToLocalStorage();
     
     console.log("Options reset to default");
 }
 
 function applyOptions() {
-  showAreYouSureScreen();
+    showAreYouSureScreen();
     let musicSlider = document.getElementById('music-volume');
     let sfxSlider = document.getElementById('sfx-volume');
-    let option1 = document.getElementById('option-1');
-    let option2 = document.getElementById('option-2');
     
     currentOptions = {
         musicVolume: musicSlider ? parseInt(musicSlider.value) : 70,
-        sfxVolume: sfxSlider ? parseInt(sfxSlider.value) : 80,
-        option1: option1 ? option1.value : 'normal',
-        option2: option2 ? option2.value : 'de'
+        sfxVolume: sfxSlider ? parseInt(sfxSlider.value) : 80
     };
     
+    // IN LOCALSTORAGE SPEICHERN
+    saveOptionsToLocalStorage();
+    
     /* HIER OPTIONEN IM SPIEL ANWENDEN (z.B. Musiklautstärke, Sprache, etc.) */
+    applyGameOptions(currentOptions);
 }
 
 function cancelOptions() {
+    // Beim Abbrechen die gespeicherten Werte neu laden (nicht die aktuellen Slider-Werte)
     loadCurrentOptions();
     showStartScreen();
 }
@@ -237,6 +258,44 @@ function showAreYouSureScreen() {
     showScreen(5);
 }
 
+// NEUE FUNKTION: Optionen im Spiel anwenden
+function applyGameOptions(options) {
+    // Beispiel für Audio-Integration
+    if (window.gameAudio && typeof window.gameAudio.setMusicVolume === 'function') {
+        window.gameAudio.setMusicVolume(options.musicVolume / 100);
+    } else {
+        console.log(`Applied Music Volume: ${options.musicVolume}%`);
+    }
+    
+    if (window.gameAudio && typeof window.gameAudio.setSfxVolume === 'function') {
+        window.gameAudio.setSfxVolume(options.sfxVolume / 100);
+    } else {
+        console.log(`Applied SFX Volume: ${options.sfxVolume}%`);
+    }
+}
+
+// NEUE FUNKTION: Echtzeit-Vorschau (optional)
+function updatePreviewVolume(type, volume) {
+    const normalizedVolume = volume / 100;
+    if (type === 'music') {
+        if (window.gameAudio && typeof window.gameAudio.previewMusicVolume === 'function') {
+            window.gameAudio.previewMusicVolume(normalizedVolume);
+        }
+    } else if (type === 'sfx') {
+        if (window.gameAudio && typeof window.gameAudio.previewSfxVolume === 'function') {
+            window.gameAudio.previewSfxVolume(normalizedVolume);
+        }
+    }
+}
+
+// NEUE FUNKTION: Gespeicherte Optionen löschen (für Debugging)
+function clearSavedOptions() {
+    localStorage.removeItem(STORAGE_KEYS.MUSIC_VOLUME);
+    localStorage.removeItem(STORAGE_KEYS.SFX_VOLUME);
+    console.log('Saved options cleared from localStorage');
+    currentOptions = { ...defaultOptions };
+    loadCurrentOptions();
+}
 
 /* Tutorial Funktionen */
 function showTutorialScreen() {
@@ -351,7 +410,6 @@ function endTutorial() {
     if (hint) hint.remove();
 }
 
-// Optional: Klick-Hinweis anzeigen
 function showClickHint() {
     let tutorialScreen = document.getElementById("tutorialScreen");
     if (tutorialScreen && !document.querySelector(".click-hint")) {
@@ -378,6 +436,17 @@ function formatTime(seconds) {
 
 /* ON LOAD / EXIT GAME FUNCTIONS */
 window.onload = function () {
+  // Zuerst gespeicherte Optionen laden
+  currentOptions = loadOptionsFromLocalStorage();
+  console.log("Loaded options from localStorage:", currentOptions);
+  
+  // Dann UI initialisieren
+  setupVolumeSliders();
+  
+  // Optionen im Spiel anwenden (falls nötig)
+  applyGameOptions(currentOptions);
+  
+  // Start-Screen anzeigen
   showStartScreen();
 };
 
@@ -402,4 +471,22 @@ function exitGame() {
       <p>Thank you for playing!</p>
     </div>
   `;
+}
+
+/* ------------------------------
+            AUDIO
+------------------------------ */
+
+function onDragVolumeSlider(slider) {
+    const value = slider.value;
+    if (slider.id === "music-volume") {
+        document.getElementById("music-value").innerHTML = value + "%";
+        // Optional: Echtzeit-Vorschau
+        updatePreviewVolume('music', parseInt(value));
+    } 
+    else if (slider.id === "sfx-volume") {
+        document.getElementById("sfx-value").innerHTML = value + "%";
+        // Optional: Echtzeit-Vorschau
+        updatePreviewVolume('sfx', parseInt(value));
+    }
 }

@@ -32,7 +32,7 @@
                     <div class="option-item">
                         <label>MUSIC VOLUME:</label>
                         <div class="slider-container">
-                            <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="70">
+                            <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="70" oninput="onDragVolumeSlider(this)">
                             <span id="music-value" class="volume-value">70%</span>
                         </div>
                     </div>
@@ -41,29 +41,9 @@
                     <div class="option-item">
                         <label>SFX VOLUME:</label>
                         <div class="slider-container">
-                            <input type="range" id="sfx-volume" class="volume-slider" min="0" max="100" value="80">
+                            <input type="range" id="sfx-volume" class="volume-slider" min="0" max="100" value="80" oninput="onDragVolumeSlider(this)">
                             <span id="sfx-value" class="volume-value">80%</span>
                         </div>
-                    </div>
-
-                    <!-- Zusätzliche Option 1 -->
-                    <div class="option-item">
-                        <label>OPTION 1:</label>
-                        <select id="option-1" class="option-select">
-                            <option value="1">Option 1</option>
-                            <option value="2" selected>Option 2</option>
-                            <option value="3">Options 3</option>
-                        </select>
-                    </div>
-
-                    <!-- Zusätzliche Option 2 -->
-                    <div class="option-item">
-                        <label>OPTION 2:</label>
-                        <select id="option-2" class="option-select">
-                            <option value="none">- Please choose your language -</option>
-                            <option value="en" selected>English</option>
-                            <option value="de">German</option>
-                        </select>
                     </div>
                 </div>
 
